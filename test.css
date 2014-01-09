@@ -24,7 +24,11 @@ body {
 	background-size: cover;
 	background-attachment: fixed;
 }
-
+div.foo {
+    clip: rect(5px, 40px, 45px, 5px);
+    float: left;
+}
+/*
 input[type="text"],
 input[type="url"],
 input[type="search"],
@@ -34,6 +38,7 @@ textarea {
 	font-size: 0.9rem;
 	padding: 2px;
 	transition: box-shadow 0.5s;
+	clip: ;
 
 	&:focus {
 		border-color: color($darkColor, 30);
@@ -44,7 +49,7 @@ textarea {
 		}
 	}
 }
-/*
+
 .user {
 	display: inline-block;
 	width: 30px;
@@ -470,8 +475,13 @@ section.bookmarklet {
 		margin: 0 0 0 auto;
 	}
 }
-
+*/
+div.foo {
+    clip: rect(5px, 40px, 45px, 5px);
+}
+/*
 @import "styles-walls.css";
 @import "styles-items.css";
 @import "styles-activity.css";
+
 */

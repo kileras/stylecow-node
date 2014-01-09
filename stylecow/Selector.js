@@ -31,6 +31,19 @@ Selector.prototype = {
 			this.selectors = [];
 		}
 	},
+	is: function (value) {
+		if (!(value instanceof Array)) {
+			value = [value];
+		}
+
+		for (var i = 0, total = this.selectors.length; i < total; i++) {
+			if (value.indexOf(this.selectors[i]) !== -1) {
+				return true;
+			}
+		}
+
+		return false;
+	},
 	setParent: function (parent) {
 		this.parent = parent;
 	},

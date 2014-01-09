@@ -19,8 +19,36 @@ Property.prototype = {
 
 		this.vendor = match ? match[0] : null;
 	},
+	is: function (name, value) {
+		if (name instanceof Array) {
+			if (name.indexOf(this.name) === -1) {
+				return false;
+			}
+		} else if (this.name !== name) {
+			return false;
+		}
+
+		if (value) {
+			if (value instanceof Array) {
+				if (value.indexOf(this.value) === -1) {
+					return false;
+				}
+			} else if (this.value !== value) {
+				return false;
+			}
+		}
+
+		return true;
+	},
 	setParent: function (parent) {
 		this.parent = parent;
+	},
+	index: function () {
+		if (this.parent) {
+			return this.parent.properties.indexOf(this);
+		}
+
+		return -1;
 	},
 	toString: function () {
 		comments = this.comments.length ? ' /*' + this.comments.join(', ') + '*/' : '';

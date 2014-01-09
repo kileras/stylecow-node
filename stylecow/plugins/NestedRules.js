@@ -1,8 +1,6 @@
 
 var apply = function (options) {
-	var css = this;
-
-	css.executeRecursive(function () {
+	this.executeRecursive(function () {
 		if (this.isRoot() || this.parent.selector.type || !this.parent.selector.selectors.length) {
 			return;
 		}
@@ -13,13 +11,13 @@ var apply = function (options) {
 		
 		this.selector.remove();
 
-		for (var i = 0, total = selectors.length; i < total; i++) {
-			var selector = (selectors[i][0] === '&') ? selectors[i].substr(1) : ' ' + selectors[i];
+		selectors.forEach(function (selector) {
+			selector = (selector[0] === '&') ? selector.substr(1) : ' ' + selector;
 
-			for (var ii = 0, total2 = parentSelectors.length; ii < total2; ii++) {
-				this.selector.add(parentSelectors[ii] + selector);
-			}
-		}
+			parentSelectors.forEach(function (parentSelector) {
+				this.selector.add(parentSelector + selector);
+			}, this);
+		}, this);
 
 		root.addChild(this);
 	});

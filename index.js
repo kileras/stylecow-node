@@ -1,9 +1,20 @@
-var stylecow = require('./stylecow/Parser.js');
-var nestedRules = require('./stylecow/plugins/NestedRules.js');
+var Stylecow = require('./stylecow/Parser.js');
 
-var css = stylecow.parseFile('./test.css');
+var NestedRules = require('./stylecow/plugins/NestedRules.js'),
+	Rem = require('./stylecow/plugins/Rem.js'),
+	IeFloat = require('./stylecow/plugins/IeFloat.js'),
+	IeInlineBlock = require('./stylecow/plugins/IeInlineBlock.js'),
+	IeMinHeight = require('./stylecow/plugins/IeMinHeight.js'),
+	IeClip = require('./stylecow/plugins/IeClip.js');
 
-nestedRules.apply(css);
+var css = Stylecow.parseFile('./test2.css');
+
+NestedRules.apply(css);
+Rem.apply(css);
+IeClip.apply(css);
+IeFloat.apply(css);
+IeInlineBlock.apply(css);
+IeMinHeight.apply(css);
 
 //css.toString();
 

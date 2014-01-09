@@ -39,6 +39,45 @@ Css.prototype = {
 
 		return child;
 	},
+	getChildren: function (filter) {
+		if (!filter) {
+			return this.children;
+		}
+
+		var children = [];
+
+		this.children.forEach(function (child) {
+			if (child.selector.is(filter)) {
+				children.push(child);
+			}
+		});
+
+		return children;
+	},
+	getProperties: function (name, value) {
+		if (!name) {
+			return this.properties;
+		}
+
+		var properties = [];
+
+		this.properties.forEach(function (property) {
+			if (property.is(name, value)) {
+				properties.push(property);
+			}
+		});
+
+		return properties;
+	},
+	hasProperty: function (name, value) {
+		for (var i = 0, total = this.properties.length; i < total; i++) {
+			if (this.properties[i].is(name, value)) {
+				return true;
+			}
+		}
+
+		return false;
+	},
 	addProperty: function (property, position) {
 		property.setParent(this);
 
@@ -49,6 +88,9 @@ Css.prototype = {
 		}
 
 		return property;
+	},
+	removeProperty: function (index) {
+		this.properties.splice(index, 1);
 	},
 	setParent: function (parent) {
 		if (this.parent && this.parent.children.length) {
@@ -83,15 +125,15 @@ Css.prototype = {
 	executeRecursive: function (fn, data) {
 		fn.call(this, data);
 
-		var children = [], i, total;
+		var children = [];
 
-		for (i = 0, total = this.children.length; i < total; i++) {
-			children.push(this.children[i]);
-		}
+		this.children.forEach(function (child) {
+			children.push(child);
+		});
 
-		for (i = 0, total = children.length; i < total; i++) {
-			children[i].executeRecursive(fn, data);
-		}
+		children.forEach(function (child) {
+			child.executeRecursive(fn, data);
+		});
 	},
 	toString: function (options) {
 		options = options || {};
@@ -121,9 +163,9 @@ Css.prototype = {
 		if (this.properties.length) {
 			var indProp = selector ? (indentation + "\t") : indentation;
 
-			for (var i = 0, total = this.properties.length; i < total; i++) {
-				properties += (indProp + this.properties[i].toString() + ";\n");
-			}
+			this.properties.forEach(function (property) {
+				properties += indProp + property.toString() + ";\n";
+			});
 		}
 
 		if (this.children.length) {
@@ -132,9 +174,9 @@ Css.prototype = {
 				comments: options.comments
 			};
 
-			for (var i = 0, total = this.children.length; i < total; i++) {
-				properties += "\n" + this.children[i].toString(childOptions);
-			}
+			this.children.forEach(function (child) {
+				properties += "\n" + child.toString(childOptions);
+			});
 		}
 
 		if (properties && selector) {

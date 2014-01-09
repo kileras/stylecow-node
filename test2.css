@@ -1,0 +1,6 @@
+div.foo {
+    clip: rect(5px, 40px, 45px, 5px);
+    float: left;
+    display: inline-block;
+    min-height: 30px;
+}
