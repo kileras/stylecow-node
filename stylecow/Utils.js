@@ -1,5 +1,9 @@
 var Utils = {
 	explode: function (delimiter, string, limit, strs_in, strs_out) {
+		if (!string) {
+			return [];
+		}
+
 		strs_in = strs_in || ['(', '"', "'"];
 		strs_out = strs_out || [')', '"', "'"];
 
@@ -79,12 +83,83 @@ var Utils = {
 		}
 
 		return array;
+	},
+	executeFunctions: function (string, functionName, callback, thisCallback) {
+		if ((string.indexOf('(') === -1) || (functionName && string.indexOf(functionName + '(') === -1)) {
+			return string;
+		}
+
+		var length = string.length,
+			index = 0,
+			regexp, matches, name;
+
+		if (functionName) {
+			regexp = new RegExp('/(^|[^\w-])(' + functionName + ')$/');
+		} else {
+			regexp = new RegExp('/([\w-]+)$/');
+		}
+
+		while (index < length) {
+			index = string.indexOf('(', index);
+
+			if (index === -1) {
+				break;
+			}
+
+			if (functionName) {
+				matches = string.substr(0, index).match(regexp);
+				
+				if (!matches) {
+					index++;
+					continue;
+				}
+				name = matches[1];
+			} else {
+				matches = string.substr(0, index).match(regexp);
+				name = matches[0];
+			}
+
+			var start = index - name.length;
+
+			for (var end = index, deep = 0; end <= length; end++) {
+				var l = string[end] || '';
+
+				if (l === '(') {
+					deep++;
+					continue;
+				}
+
+				if (l === ')' && deep) {
+					deep--;
+					
+					if (!deep) {
+						break;
+					}
+				}
+			}
+
+			var parameters = string.substr(index + 1, end - index - 1);
+			var result = callback.call(thisCallback, name, Utils.explodeTrim(',', parameters));
+
+			if (result) {
+				var replaceLength = end - start + 1;
+
+				string = string.slice(0, start) + result.substr(0, replaceLength) + result.slice(replaceLength) + string.slice(start + replaceLength);
+				length = string.length;
+
+				if (result.indexOf('(') === -1) {
+					index = start + result.length;
+				} else {
+					index = start + result.indexOf('(');
+				}
+			}
+
+			index++;
+		}
+
+		return string;
 	}
 };
 
 
-
-module.exports = {
-	explode: Utils.explode,
-	explodeTrim: Utils.explodeTrim
-};
+module.exports = Utils;

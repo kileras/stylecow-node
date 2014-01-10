@@ -3,4 +3,9 @@ div.foo {
     float: left;
     display: inline-block;
     min-height: 30px;
+    margin: initial;
+}
+
+div.var :matches(h1, h2, h3) {
+	font-family: Arial;
 }
