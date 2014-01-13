@@ -1,6 +1,6 @@
 
 var apply = function (options) {
-	this.executeRecursive(function () {
+	this.executeRecursive(function (data, index) {
 		if (this.isRoot() || this.parent.selector.type || !this.parent.selector.selectors.length) {
 			return;
 		}
@@ -18,8 +18,10 @@ var apply = function (options) {
 				this.selector.add(parentSelector + selector);
 			}, this);
 		}, this);
-
-		root.addChild(this, this.index(), true);
+console.log(index);
+//console.log(root.index());
+		//root.parent.addChild(this);
+		root.parent.addChild(this, root.index() + index, true);
 	});
 };
 

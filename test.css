@@ -1,5 +1,4 @@
-/*
-@import "variables.css";
+/*@import "variables.css";
 
 @import "../../../assets/components/font-awesome/css/font-awesome.css";
 @import "../../../assets/components/csans/csans.css";
@@ -16,7 +15,7 @@ html {
 	background-attachment: fixed;
 	background: url('../img/bg.png') color(black, 6);
 }
-*/
+
 body {
 	min-height: 100%;
 	font-family: $font;
@@ -51,7 +50,7 @@ div.foo {
     float: left;
 }
 
-/*
+
 .user {
 	display: inline-block;
 	width: 30px;
@@ -435,8 +434,10 @@ section.ad {
 		border-bottom: none;
 	}
 }
-
+*/
 section.bookmarklet {
+	margin: 0;
+	
 	.btn-bookmarklet {
 		margin-top: 7px;
 	}
@@ -477,10 +478,10 @@ section.bookmarklet {
 		margin: 0 0 0 auto;
 	}
 }
-
 div.foo {
     clip: rect(5px, 40px, 45px, 5px);
 }
+/*
 
 @import "styles-walls.css";
 @import "styles-items.css";

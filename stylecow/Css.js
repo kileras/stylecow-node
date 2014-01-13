@@ -49,13 +49,13 @@ Css.prototype = {
 		return copy;
 	},
 	addChild: function (child, index, after) {
-		child.setParent(this);
-
 		if (index === undefined || (after && index === this.children.length)) {
 			this.children.push(child);
 		} else {
 			this.children.splice(after ? index + 1 : index, 0, child);
 		}
+
+		child.setParent(this);
 
 		return child;
 	},
@@ -148,13 +148,9 @@ Css.prototype = {
 		return -1;
 	},
 	getRoot: function () {
-		if (this.parent === null) {
-			return null;
-		}
+		var parent = this;
 
-		var parent = this.parent;
-
-		while (parent.parent && !parent.selector.type) {
+		while (!parent.isRoot()) {
 			parent = parent.parent;
 		}
 
@@ -163,13 +159,13 @@ Css.prototype = {
 	isRoot: function () {
 		return (!this.parent || !this.parent.parent);
 	},
-	executeRecursive: function (fn, data) {
+	executeRecursive: function (fn, data, index) {
 		var propagateData = Utils.clone(data);
 
-		fn.call(this, propagateData);
+		fn.call(this, propagateData, index);
 
-		this.getChildren().forEach(function (child) {
-			child.executeRecursive(fn, propagateData);
+		this.getChildren().forEach(function (child, index) {
+			child.executeRecursive(fn, propagateData, index);
 		});
 	},
 	toString: function (options) {
