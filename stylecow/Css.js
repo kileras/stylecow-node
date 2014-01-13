@@ -48,20 +48,20 @@ Css.prototype = {
 
 		return copy;
 	},
-	addChild: function (child, index) {
+	addChild: function (child, index, after) {
 		child.setParent(this);
 
-		if (index === undefined) {
+		if (index === undefined || (after && index === this.children.length)) {
 			this.children.push(child);
 		} else {
-			this.children.splice(index, 0, child);
+			this.children.splice(after ? index + 1 : index, 0, child);
 		}
 
 		return child;
 	},
 	getChildren: function (filter) {
 		if (!filter) {
-			return this.children;
+			return Utils.clone(this.children);
 		}
 
 		var children = [];
@@ -168,13 +168,7 @@ Css.prototype = {
 
 		fn.call(this, propagateData);
 
-		var children = [];
-
-		this.children.forEach(function (child) {
-			children.push(child);
-		});
-
-		children.forEach(function (child) {
+		this.getChildren().forEach(function (child) {
 			child.executeRecursive(fn, propagateData);
 		});
 	},

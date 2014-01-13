@@ -2,21 +2,21 @@ var apply = function (options) {
 	var variables = {};
 
 	this.getChildren([':root', 'html']).forEach(function (css) {
-		css.properties.forEach(function (property, index) {
+		css.properties.forEach(function (property) {
 			if (property.name.indexOf('var-') === 0) {
 				variables[property.name.substr(4)] = property.value;
 
-				property.parent.removeProperty(index);
+				property.parent.removeProperty(property.index());
 			}
 		});
 	});
 
 	this.executeRecursive(function (variables) {
-		this.properties.forEach(function (property, index) {
+		this.properties.forEach(function (property) {
 			if (property.name.indexOf('var-') === 0) {
 				variables[property.name.substr(4)] = property.value;
 
-				property.parent.removeProperty(index);
+				property.parent.removeProperty(property.index());
 			} else {
 				property.executeFunctions(function (name, params) {
 					var variable = params[0];

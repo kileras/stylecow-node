@@ -2,7 +2,7 @@ var Property = require('../Property.js');
 
 var apply = function (options) {
 	this.executeRecursive(function () {
-		this.properties.forEach(function (property) {
+		this.getProperties().forEach(function (property) {
 			var newName;
 
 			switch (property.name) {
@@ -26,7 +26,7 @@ var apply = function (options) {
 					return;
 			}
 
-			property.parent.addProperty(Property.create(newName, property.value)).vendor = 'moz';
+			property.parent.addProperty(Property.create(newName, property.value), property.index()).vendor = 'moz';
 		});
 	});
 };

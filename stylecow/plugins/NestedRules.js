@@ -19,7 +19,7 @@ var apply = function (options) {
 			}, this);
 		}, this);
 
-		root.addChild(this);
+		root.addChild(this, this.index(), true);
 	});
 };
 

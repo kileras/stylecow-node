@@ -31,16 +31,14 @@ var remToPixels = function (value, rootPixels) {
 var apply = function (options) {
 	var rem = 16;
 
-	this.getChildren([':root', 'html', 'body']).forEach(function (child) {
+	this.getChildren([':root', 'html']).forEach(function (child) {
 		child.getProperties('font-size').forEach(function (property) {
 			rem = valueToPixels(property.value);
 		});
 	});
 
 	this.executeRecursive(function () {
-		var newProperties = [];
-
-		this.properties.forEach(function (property) {
+		this.getProperties().forEach(function (property) {
 			if (!property.value || property.value.indexOf('rem') === -1) {
 				return false;
 			}
@@ -50,15 +48,8 @@ var apply = function (options) {
 			});
 
 			if (property.value !== value) {
-				newProperties.push({
-					prop: Property.create(property.name, value),
-					index: property.index()
-				});
+				this.addProperty(Property.create(property.name, value), property.index());
 			}
-		}, this);
-
-		newProperties.forEach(function (property) {
-			this.addProperty(property.prop, property.index);
 		}, this);
 	});
 };

@@ -18,7 +18,7 @@ var NestedRules = require('./stylecow/plugins/NestedRules.js'),
 	LinearGradient = require('./stylecow/plugins/LinearGradient.js'),
 	VendorPrefixes = require('./stylecow/plugins/VendorPrefixes.js');
 
-var css = Stylecow.parseFile('./test2.css');
+var css = Stylecow.parseFile('./test.css');
 
 NestedRules.apply(css);
 Rem.apply(css);
