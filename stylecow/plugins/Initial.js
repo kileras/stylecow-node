@@ -145,7 +145,7 @@ var initials = {
 
 var apply = function (options) {
 	this.executeRecursive(function () {
-		this.getProperties().forEach(function (property) {
+		this.properties.forEach(function (property) {
 			if (property.value === 'initial') {
 				property.value = initials[property.name] || 'inherit';
 			}

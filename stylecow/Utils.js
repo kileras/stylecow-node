@@ -85,6 +85,8 @@ var Utils = {
 		return array;
 	},
 	executeFunctions: function (string, functionName, callback, thisCallback) {
+		string = '' + string;
+
 		if ((string.indexOf('(') === -1) || (functionName && string.indexOf(functionName + '(') === -1)) {
 			return string;
 		}
@@ -94,9 +96,9 @@ var Utils = {
 			regexp, matches, name;
 
 		if (functionName) {
-			regexp = new RegExp('/(^|[^\w-])(' + functionName + ')$/');
+			regexp = new RegExp('(^|[^\w-])(' + functionName + ')$');
 		} else {
-			regexp = new RegExp('/([\w-]+)$/');
+			regexp = /([\w-]+)$/;
 		}
 
 		while (index < length) {
@@ -113,7 +115,7 @@ var Utils = {
 					index++;
 					continue;
 				}
-				name = matches[1];
+				name = matches[2];
 			} else {
 				matches = string.substr(0, index).match(regexp);
 				name = matches[0];
@@ -133,18 +135,17 @@ var Utils = {
 					deep--;
 					
 					if (!deep) {
+						end++;
 						break;
 					}
 				}
 			}
 
-			var parameters = string.substr(index + 1, end - index - 1);
-			var result = callback.call(thisCallback, name, Utils.explodeTrim(',', parameters));
+			var parameters = string.slice(index + 1, end - 1);
+			var result = callback.call(thisCallback, name, Utils.explodeTrim(',', parameters), string.slice(start, end));
 
-			if (result) {
-				var replaceLength = end - start + 1;
-
-				string = string.slice(0, start) + result.substr(0, replaceLength) + result.slice(replaceLength) + string.slice(start + replaceLength);
+			if (result !== undefined) {
+				string = string.slice(0, start) + result.substr(0, end - start) + result.slice(end - start) + string.slice(end);
 				length = string.length;
 
 				if (result.indexOf('(') === -1) {
@@ -158,6 +159,31 @@ var Utils = {
 		}
 
 		return string;
+	},
+	clone: function (obj) {
+		if (!obj) {
+			return obj;
+		}
+
+		if (obj instanceof Array) {
+			var copy = [];
+			for (var i = 0, len = obj.length; i < len; i++) {
+				copy[i] = obj[i];
+			}
+			return copy;
+		}
+
+		if (obj instanceof Object) {
+			var copy = {};
+			for (var attr in obj) {
+				if (obj.hasOwnProperty(attr)) {
+					copy[attr] = obj[attr];
+				}
+			}
+			return copy;
+		}
+
+		return obj;
 	}
 };
 

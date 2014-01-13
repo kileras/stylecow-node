@@ -1,11 +1,24 @@
+html {
+    background: blue linear-gradient(to bottom, red, blue) no-repeat;
+}
+/*
+
 div.foo {
     clip: rect(5px, 40px, 45px, 5px);
     float: left;
     display: inline-block;
     min-height: 30px;
     margin: initial;
+    opacity: 0.5;
+    color: var(color2, #123);
 }
 
 div.var :matches(h1, h2, h3) {
 	font-family: Arial;
+	opacity: .3;
+	filter: none;
+	transform: rotate(45deg) scale(-1, -1);
+    color: color(blue gray);
+    background-color: rgba(23, 45, 67, 0.5);
 }
+*/

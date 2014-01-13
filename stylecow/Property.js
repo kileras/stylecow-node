@@ -11,6 +11,13 @@ function Property (name, value) {
 }
 
 Property.prototype = {
+	clone: function () {
+		var copy = new Property(this.name, this.value);
+		copy.vendor = this.vendor;
+		copy.comments = Utils.clone(this.comments);
+
+		return copy;
+	},
 	set: function (name, value) {
 		this.name = name;
 		this.value = value;
@@ -40,6 +47,17 @@ Property.prototype = {
 
 		return true;
 	},
+	addValue: function (value) {
+		if (this.value) {
+			var values = Utils.explode(',', this.value);
+
+			if (values.indexOf(value) === -1) {
+				this.value += ', ' + value;
+			}
+		} else {
+			this.value = value;
+		}
+	},
 	setParent: function (parent) {
 		this.parent = parent;
 	},
@@ -49,6 +67,9 @@ Property.prototype = {
 		}
 
 		return -1;
+	},
+	executeFunctions: function (callback, name) {
+		this.value = Utils.executeFunctions(this.value, name, callback, this);
 	},
 	toString: function () {
 		comments = this.comments.length ? ' /*' + this.comments.join(', ') + '*/' : '';

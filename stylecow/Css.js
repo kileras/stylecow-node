@@ -1,4 +1,6 @@
-var Selector = require('./Selector.js');
+var Selector = require('./Selector.js'),
+	Property = require('./Property.js'),
+	Utils = require('./Utils.js');
 
 function repeat (pattern, count) {
 	var result = '';
@@ -11,12 +13,15 @@ function repeat (pattern, count) {
 	return result;
 }
 
+
+
 function Css (selector) {
 	this.parent = null;
 	this.selector = null;
 	this.properties = [];
 	this.children = [];
 	this.comments = [];
+	this.vendor = null;
 
 	if (selector) {
 		this.selector = selector;
@@ -28,13 +33,28 @@ function Css (selector) {
 }
 
 Css.prototype = {
-	addChild: function (child, position) {
+	clone: function () {
+		var copy = new Css(this.selector.clone());
+
+		this.properties.forEach(function (property) {
+			copy.addProperty(property.clone());
+		});
+
+		this.children.forEach(function (child) {
+			copy.addChild(child.clone());
+		});
+
+		copy.comments = Utils.clone(this.comments);
+
+		return copy;
+	},
+	addChild: function (child, index) {
 		child.setParent(this);
 
-		if (!position) {
+		if (index === undefined) {
 			this.children.push(child);
 		} else {
-			this.children.splice(position, 0, child);
+			this.children.splice(index, 0, child);
 		}
 
 		return child;
@@ -56,7 +76,7 @@ Css.prototype = {
 	},
 	getProperties: function (name, value) {
 		if (!name) {
-			return this.properties;
+			return Utils.clone(this.properties);
 		}
 
 		var properties = [];
@@ -78,19 +98,33 @@ Css.prototype = {
 
 		return false;
 	},
-	addProperty: function (property, position) {
+	addProperty: function (property, index) {
 		property.setParent(this);
 
-		if (!position) {
+		if (index === undefined) {
 			this.properties.push(property);
 		} else {
-			this.properties.splice(position, 0, property);
+			this.properties.splice(index, 0, property);
 		}
 
 		return property;
 	},
 	removeProperty: function (index) {
 		this.properties.splice(index, 1);
+	},
+	addMsFilterProperty: function (filter) {
+		var property = this.getProperties('filter').pop();
+
+		if (property) {
+			if (property.value === 'none') {
+				property.value = filter;
+			} else {
+				property.addValue(filter);
+			}
+			property.vendor = 'ms';
+		} else {
+			this.addProperty(Property.create('filter', filter)).vendor = 'ms';
+		}
 	},
 	setParent: function (parent) {
 		if (this.parent && this.parent.children.length) {
@@ -105,6 +139,13 @@ Css.prototype = {
 		}
 
 		this.parent = parent;
+	},
+	index: function () {
+		if (this.parent) {
+			return this.parent.children.indexOf(this);
+		}
+
+		return -1;
 	},
 	getRoot: function () {
 		if (this.parent === null) {
@@ -123,7 +164,9 @@ Css.prototype = {
 		return (!this.parent || !this.parent.parent);
 	},
 	executeRecursive: function (fn, data) {
-		fn.call(this, data);
+		var propagateData = Utils.clone(data);
+
+		fn.call(this, propagateData);
 
 		var children = [];
 
@@ -132,7 +175,7 @@ Css.prototype = {
 		});
 
 		children.forEach(function (child) {
-			child.executeRecursive(fn, data);
+			child.executeRecursive(fn, propagateData);
 		});
 	},
 	toString: function (options) {
@@ -187,9 +230,11 @@ Css.prototype = {
 			return properties;
 		}
 
-		if (selector) {
+		if (selector && this.selector.type) {
 			return comments + indentation + selector + ";\n";
 		}
+
+		return '';
 	}
 }
 

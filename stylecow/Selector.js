@@ -12,6 +12,12 @@ function Selector (type, selectors) {
 }
 
 Selector.prototype = {
+	clone: function () {
+		var copy = new Selector(this.type, Utils.clone(this.selectors));
+		copy.vendor = this.vendor;
+
+		return copy;
+	},
 	set: function (selectors) {
 		if (selectors instanceof Array) {
 			this.selectors = selectors;
@@ -48,7 +54,7 @@ Selector.prototype = {
 		this.parent = parent;
 	},
 	toString: function () {
-		return (this.type ? this.type + ' ' : '') + this.selectors.join(', ');
+		return this.selectors.join(', ');
 	}
 }
 
@@ -59,12 +65,8 @@ module.exports = {
 	createFromString: function (string) {
 		string = string.trim();
 
-		if (string[0] === '@') {
-			var pieces = Utils.explodeTrim(' ', string, 2);
+		var type = string.match(/^(@[^\s]+)/);
 
-			return new Selector(pieces[0], pieces[1] ? Utils.explodeTrim(',', pieces[1]) : null);
-		}
-
-		return new Selector(null, Utils.explodeTrim(',', string));
+		return new Selector(type ? type[1] : null, Utils.explodeTrim(',', string));
 	}
 };
