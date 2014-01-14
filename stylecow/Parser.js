@@ -142,6 +142,7 @@ var Parser = {
 								col++;
 								
 								var nextNextChar = (col === length) ? null : stringLine[col];
+								
 								if (nextNextChar === '/') {
 									col++;
 								}

@@ -68,6 +68,13 @@ Property.prototype = {
 
 		return -1;
 	},
+	addComment: function (comment) {
+		if (comment) {
+			this.comments.push(comment);
+		}
+
+		return this;
+	},
 	executeFunctions: function (callback, name) {
 		this.value = Utils.executeFunctions(this.value, name, callback, this);
 	},

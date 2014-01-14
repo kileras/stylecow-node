@@ -147,6 +147,13 @@ Css.prototype = {
 
 		return -1;
 	},
+	addComment: function (comment) {
+		if (comment) {
+			this.comments.push(comment);
+		}
+
+		return this;
+	},
 	executeRecursive: function (fn, data) {
 		var propagateData = Utils.clone(data);
 
@@ -166,9 +173,9 @@ Css.prototype = {
 			comments = '',
 			indentation = repeat("\t", options.indent);
 
-		//if (options.comments && this.comments.length) {
-		//	comments = indentation + '/*' + this.comments.join(', ') + '*/' + "\n";
-		//}
+		if (options.comments && this.comments.length) {
+			comments = indentation + '/*' + this.comments.join("\n") + '*/' + "\n";
+		}
 
 		/*if (!empty($options['sourceMap'])) {
 			$comments .= empty($this->sourceMap) ? '' : $indentation.'/* line: '.$this->sourceMap[0];
@@ -185,23 +192,28 @@ Css.prototype = {
 			var indProp = selector ? (indentation + "\t") : indentation;
 
 			this.properties.forEach(function (property) {
-				properties += indProp + property.toString() + ";\n";
+				properties += "\n" + indProp + property.toString() + ";";
 			});
 		}
 
 		if (this.children.length) {
-			var childOptions = {
-				indent: options.indent + (selector ? 1 : 0),
-				comments: options.comments
-			};
+			var childOptions = Utils.clone(options);
+			
+			if (selector) {
+				++childOptions.indent;
+			}
 
 			this.children.forEach(function (child) {
-				properties += "\n" + child.toString(childOptions);
+				var string = child.toString(childOptions);
+
+				if (string) {
+					properties += "\n" + string;
+				}
 			});
 		}
 
 		if (properties && selector) {
-			return comments + indentation + selector + " {\n" + properties + indentation + "}\n";
+			return comments + indentation + selector + " {" + properties + "\n" + indentation + "}\n";
 		}
 
 		if (properties) {
