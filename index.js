@@ -1,5 +1,10 @@
-var Stylecow = require('./stylecow/Parser.js');
+var styleCow = require('./stylecow/index.js');
 
+var css = styleCow.loadFile('./test.css');
+
+console.log(css.toString());
+
+/*
 var NestedRules = require('./stylecow/plugins/NestedRules.js'),
 	Rem = require('./stylecow/plugins/Rem.js'),
 	Matches = require('./stylecow/plugins/Matches.js'),
@@ -37,6 +42,7 @@ Variables.apply(css);
 VendorPrefixes.apply(css);
 FFBorderRadius.apply(css);
 LinearGradient.apply(css);
+*/
 
 /*
 BaseUrl
@@ -45,4 +51,4 @@ Math
 MediaQuery
 */
 
-console.log(css.toString());
+//console.log(css.toString());
