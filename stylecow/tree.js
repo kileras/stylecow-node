@@ -1,8 +1,6 @@
 (function (tree) {
-	var utils = require('./utils.js');
-
-	require('./selector');
-	require('./rule');
-	require('./ruleset');
+	require('./tree/selector');
+	require('./tree/rule');
+	require('./tree/ruleset');
 
 })(require('./tree'));

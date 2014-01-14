@@ -1,5 +1,5 @@
 (function (tree) {
-	var utils = require('./utils.js');
+	var utils = require('../utils');
 
 	tree.rule = function (name, value) {
 		this.parent = null;
@@ -85,4 +85,4 @@
 			return this.name + ': ' + this.value + comments;
 		}
 	}
-})(require('./tree'));
+})(require('../tree'));

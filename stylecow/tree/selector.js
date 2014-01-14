@@ -1,5 +1,5 @@
 (function (tree) {
-	var utils = require('./utils.js');
+	var utils = require('../utils');
 
 	tree.selector = function (type, selectors) {
 		this.parent = null;
@@ -59,4 +59,4 @@
 		}
 	}
 
-})(require('./tree'));
+})(require('../tree'));

@@ -1,5 +1,5 @@
 (function (tree) {
-	var utils = require('./utils.js');
+	var utils = require('../utils');
 
 	var repeat = function (pattern, count) {
 		var result = '';
@@ -120,7 +120,7 @@
 			}
 		},
 		setSelector: function (selector) {
-			this.selector = this;
+			this.selector = selector;
 			this.selector.setParent(this);
 		},
 		setParent: function (parent) {
@@ -161,8 +161,7 @@
 			});
 		},
 		toString: function (options) {
-			options = options || {};
-
+			options = utils.clone(options) || {};
 			options.indent = options.indent || 0;
 
 			var selector = this.selector ? this.selector.toString() : '',
@@ -183,15 +182,12 @@
 			}
 
 			if (this.children.length) {
-				var childOptions = utils.clone(options);
-				
 				if (selector) {
-					++childOptions.indent;
+					++options.indent;
 				}
-				this.children[1].toString(childOptions);
 
 				this.children.forEach(function (child) {
-					var string = child.toString(childOptions);
+					var string = child.toString(options);
 
 					if (string) {
 						rules += "\n" + string;
@@ -216,4 +212,4 @@
 	}
 
 
-})(require('./tree'));
+})(require('../tree'));
