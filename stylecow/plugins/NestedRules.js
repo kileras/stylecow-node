@@ -1,28 +1,38 @@
+var mergeNestedRules = function (pos) {
+	var child = this.children[pos],
+		childSelectors = child.selector.selectors;
 
-var apply = function (options) {
-	this.executeRecursive(function (data, index) {
-		if (this.isRoot() || this.parent.selector.type || !this.parent.selector.selectors.length) {
-			return;
-		}
+	while (child.children.length) {
+		var nested = child.children[0];
+		var nestedSelectors = nested.selector.selectors;
 
-		var parentSelectors = this.parent.selector.selectors,
-			selectors = this.selector.selectors,
-			root = this.getRoot();
-		
-		this.selector.remove();
+		nested.selector.remove();
 
-		selectors.forEach(function (selector) {
+		nestedSelectors.forEach(function (selector) {
 			selector = (selector[0] === '&') ? selector.substr(1) : ' ' + selector;
 
-			parentSelectors.forEach(function (parentSelector) {
-				this.selector.add(parentSelector + selector);
-			}, this);
-		}, this);
-console.log(index);
-//console.log(root.index());
-		//root.parent.addChild(this);
-		root.parent.addChild(this, root.index() + index, true);
-	});
+			childSelectors.forEach(function (pref) {
+				nested.selector.add(pref + selector);
+			});
+		});
+
+		this.addChild(nested, pos++, true);
+	}
+};
+
+
+var apply = function (options) {
+	var k = 0, child, childSelectors;
+
+	while (this.children[k]) {
+		if (!this.children[k].selector.type) {
+			mergeNestedRules.call(this, k);
+		} else {
+			apply.call(this.children[k]);
+		}
+
+		k++;
+	}
 };
 
 module.exports = {

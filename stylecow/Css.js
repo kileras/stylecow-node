@@ -147,25 +147,13 @@ Css.prototype = {
 
 		return -1;
 	},
-	getRoot: function () {
-		var parent = this;
-
-		while (!parent.isRoot()) {
-			parent = parent.parent;
-		}
-
-		return parent;
-	},
-	isRoot: function () {
-		return (!this.parent || !this.parent.parent);
-	},
-	executeRecursive: function (fn, data, index) {
+	executeRecursive: function (fn, data) {
 		var propagateData = Utils.clone(data);
 
-		fn.call(this, propagateData, index);
+		fn.call(this, propagateData);
 
-		this.getChildren().forEach(function (child, index) {
-			child.executeRecursive(fn, propagateData, index);
+		this.getChildren().forEach(function (child) {
+			child.executeRecursive(fn, propagateData);
 		});
 	},
 	toString: function (options) {

@@ -1,4 +1,4 @@
-/*@import "variables.css";
+@import "variables.css";
 
 @import "../../../assets/components/font-awesome/css/font-awesome.css";
 @import "../../../assets/components/csans/csans.css";
@@ -434,7 +434,7 @@ section.ad {
 		border-bottom: none;
 	}
 }
-*/
+
 section.bookmarklet {
 	margin: 0;
 	
@@ -478,10 +478,11 @@ section.bookmarklet {
 		margin: 0 0 0 auto;
 	}
 }
-div.foo {
-    clip: rect(5px, 40px, 45px, 5px);
+@media (min-width: 400px) {
+	div.foo {
+	    clip: rect(5px, 40px, 45px, 5px);
+	}
 }
-/*
 
 @import "styles-walls.css";
 @import "styles-items.css";
