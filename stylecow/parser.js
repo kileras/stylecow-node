@@ -1,17 +1,22 @@
-var fs = require('fs'),
-	Css = require('./Css.js'),
-	Property = require('./Property.js'),
-	Selector = require('./Selector.js');
+var tree = require('./tree');
+var utils = require('./utils');
 
-var Parser = {
-	parseFile: function (file) {
-		var code = fs.readFileSync(file, 'utf8');
+var parser = {
+	parseSelector: function (string) {
+		string = string.trim();
 
-		return Parser.parse(code);
+		var type = string.match(/^(@[^\s]+)/);
+
+		return new tree.selector(type ? type[1] : null, utils.explodeTrim(',', string));
 	},
-	parse: function (code) {
-		var css = Css.create(),
-			child = css,
+	parseRule: function (string) {
+		var pieces = utils.explodeTrim(':', string, 2);
+
+		return new tree.rule(pieces[0], pieces[1]);
+	},
+	parseRuleset: function (code) {
+		var ruleset = new tree.ruleset(),
+			child = ruleset,
 			status = ['selector'],
 			buffer = '';
 
@@ -27,21 +32,21 @@ var Parser = {
 
 			var col = 0,
 				length = stringLine.length,
-				thisChar = null,
+				currChar = null,
 				previousChar = null,
 				nextChar = stringLine[col];
 
 			while (col < length) {
-				previousChar = thisChar;
-				thisChar = nextChar;
+				previousChar = currChar;
+				currChar = nextChar;
 				col ++;
 				nextChar = (col === length) ? null : stringLine[col];
 
-				switch (thisChar) {
+				switch (currChar) {
 					case '"':
 						switch (status[0]) {
 							case 'doubleQuote':
-								buffer += thisChar;
+								buffer += currChar;
 
 								if (previousChar !== '\\') {
 									status.shift();
@@ -49,12 +54,12 @@ var Parser = {
 								break;
 
 							case 'simpleQuote':
-								buffer += thisChar;
+								buffer += currChar;
 								break;
 
 							case 'selector':
-							case 'properties':
-								buffer += thisChar;
+							case 'rules':
+								buffer += currChar;
 								status.unshift('doubleQuote');
 								break
 						}
@@ -63,7 +68,7 @@ var Parser = {
 					case "'":
 						switch (status[0]) {
 							case 'simpleQuote':
-								buffer += thisChar;
+								buffer += currChar;
 
 								if (previousChar !== '\\') {
 									status.shift();
@@ -71,12 +76,12 @@ var Parser = {
 								break;
 
 							case 'doubleQuote':
-								buffer += thisChar;
+								buffer += currChar;
 								break;
 
 							case 'selector':
-							case 'properties':
-								buffer += thisChar;
+							case 'rules':
+								buffer += currChar;
 								status.unshift('simpleQuote');
 								break
 						}
@@ -85,10 +90,10 @@ var Parser = {
 					case '{':
 						switch (status[0]) {
 							case 'selector':
-							case 'properties':
-								child = child.addChild(Css.create(Selector.createFromString(buffer)));
+							case 'rules':
+								child = child.addChild(new tree.ruleset(parser.parseSelector(buffer)));
 								//->setSourceMap($line, $col, $relativePath);
-								status.unshift('properties');
+								status.unshift('rules');
 								buffer = '';
 								break;
 						}
@@ -96,9 +101,9 @@ var Parser = {
 
 					case '}':
 						switch (status[0]) {
-							case 'properties':
+							case 'rules':
 								if (buffer.trim()) {
-									child.addProperty(Property.createFromString(buffer));
+									child.addRule(new tree.rule(parser.parseRule(buffer)));
 									//->setSourceMap($line, $col, $relativePath);
 								}
 
@@ -113,7 +118,7 @@ var Parser = {
 					case ';':
 						switch (status[0]) {
 							case 'selector':
-								child.addChild(new Css.create(Selector.createFromString(buffer)));
+								child.addChild(new tree.ruleset(parser.parseSelector(buffer)));
 								//->setSourceMap($line, $col, $relativePath);
 
 								/*if ((strpos($buffer, '@import') === false) || !is_object($Children = self::parseImport($buffer, $filename, $contextFile))) {
@@ -127,8 +132,8 @@ var Parser = {
 								buffer = '';
 								break;
 
-							case 'properties':
-								child.addProperty(Property.createFromString(buffer));
+							case 'rules':
+								child.addRule(parser.parseRule(buffer));
 								//->setSourceMap($line, $col, $relativePath);
 								buffer = '';
 								break;
@@ -142,11 +147,12 @@ var Parser = {
 								col++;
 								
 								var nextNextChar = (col === length) ? null : stringLine[col];
+								
 								if (nextNextChar === '/') {
 									col++;
 								}
 							} else {
-								buffer += thisChar;
+								buffer += currChar;
 							}
 						} else if (previousChar === '*') {
 							status.shift();
@@ -159,19 +165,15 @@ var Parser = {
 						}
 						
 						if (status[0] !== 'comment') {
-							buffer += thisChar;
+							buffer += currChar;
 						}
 				}
 
 			}
 		};
 
-		return css;
+		return ruleset;
 	}
 };
 
-
-
-module.exports = {
-	parseFile: Parser.parseFile
-};
+module.exports = parser;

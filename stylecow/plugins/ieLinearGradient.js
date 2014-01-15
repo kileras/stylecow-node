@@ -1,5 +1,4 @@
-var Property = require('../Property.js'),
-	Color = require('./Color.js');
+var color = require('../color');
 
 var getFilter = function (params) {
 	var direction, reverse;
@@ -36,8 +35,8 @@ var getFilter = function (params) {
 	}
 
 	if (direction && params.length === 2) {
-		params[0] = Color.RGBA_HEX(Color.toRGBA(params[0]));
-		params[1] = Color.RGBA_HEX(Color.toRGBA(params[1]));
+		params[0] = color.RGBA_HEX(color.toRGBA(params[0]));
+		params[1] = color.RGBA_HEX(color.toRGBA(params[1]));
 
 		if (reverse) {
 			params.reverse();
@@ -49,26 +48,29 @@ var getFilter = function (params) {
 
 		return 'progid:DXImageTransform.Microsoft.gradient(startColorStr=\'#' + params[0] + '\', endColorStr=\'#' + params[1] + '\')';
 	}
-}
-
-var apply = function (options) {
-	this.executeRecursive(function () {
-		var property = this.getProperties(['background', 'background-image']).pop();
-
-		if (property) {
-			property.executeFunctions(function (name, params, fnString) {
-				var filter = getFilter(params);
-
-				if (filter) {
-					this.parent.addMsFilterProperty(filter);
-				}
-			}, 'linear-gradient');
-		}
-	});
 };
 
-module.exports = {
-	apply: function (css, options) {
-		apply.call(css, options);
-	}
-};
+(function (plugins) {
+	plugins.ieLinearGradient = function (css) {
+		css.executeRecursive(function () {
+			var rule = this.getRules(['background', 'background-image']).pop();
+
+			if (rule) {
+				rule.executeFunctions(function (name, params) {
+					var filter = getFilter(params);
+
+					if (filter) {
+						this.parent.addMsFilter(filter);
+					}
+				}, 'linear-gradient');
+			}
+		});
+	};
+
+	plugins.ieLinearGradient.support = {
+		'explorer': 10.0
+	};
+
+	plugins.ieLinearGradient.enabled = true;
+})(require('../plugins'));
+

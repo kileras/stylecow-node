@@ -1,24 +1,26 @@
 html {
-    background: blue linear-gradient(to bottom, red, blue) no-repeat;
+    font-size: 16px;
+    opacity: 0.9;
+    background: rgba(23, 45, 67, 1);
 }
-/*
+body {
+    font-size: 3rem;
+    background: linear-gradient(to bottom, red, blue);
 
-div.foo {
-    clip: rect(5px, 40px, 45px, 5px);
-    float: left;
-    display: inline-block;
-    min-height: 30px;
-    margin: initial;
-    opacity: 0.5;
-    color: var(color2, #123);
+    p:matches(.one, .two) {
+        font-size: 1rem;
+        margin: initial;
+    }
 }
+div {
+	border-top-left-radius: 10px;
+	clip: rect(10, 23, 45, 6);
+	float: left;
 
-div.var :matches(h1, h2, h3) {
-	font-family: Arial;
-	opacity: .3;
-	filter: none;
-	transform: rotate(45deg) scale(-1, -1);
-    color: color(blue gray);
-    background-color: rgba(23, 45, 67, 0.5);
+	span {
+		display: inline-block;
+		min-height: 10px;
+		opacity: 0.5;
+		transform: rotate(90deg);
+	}
 }
-*/
