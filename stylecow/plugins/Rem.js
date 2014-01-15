@@ -1,4 +1,4 @@
-var Property = require('../Property.js');
+var tree = require('../tree');
 
 var valueToPixels = function (value) {
 	if (value[0] === '.') {
@@ -18,7 +18,7 @@ var valueToPixels = function (value) {
 	}
 
 	return 16;
-}
+};
 
 var remToPixels = function (value, rootPixels) {
 	if (value[0] === '.') {
@@ -26,38 +26,32 @@ var remToPixels = function (value, rootPixels) {
 	}
 
 	return (rootPixels * parseFloat(value, 10)) + 'px';
-}
+};
 
-var apply = function (options) {
-	var rem = 16;
+(function (plugins) {
+	plugins.rem = function (css) {
+		var rem = 16;
 
-	this.getChildren([':root', 'html']).forEach(function (child) {
-		child.getProperties('font-size').forEach(function (property) {
-			rem = valueToPixels(property.value);
-		});
-	});
-
-	this.executeRecursive(function () {
-		this.getProperties().forEach(function (property) {
-			if (!property.value || property.value.indexOf('rem') === -1) {
-				return false;
-			}
-
-			var value = property.value.replace(/([0-9\.]+)rem/, function (match) {
-				return remToPixels(match, rem);
+		css.getChildren([':root', 'html']).forEach(function (child) {
+			child.getRules('font-size').forEach(function (rule) {
+				rem = valueToPixels(rule.value);
 			});
+		});
 
-			if (property.value !== value) {
-				this.addProperty(Property.create(property.name, value), property.index());
-			}
-		}, this);
-	});
-};
+		css.executeRecursive(function () {
+			this.getRules().forEach(function (rule) {
+				if (!rule.value || rule.value.indexOf('rem') === -1) {
+					return false;
+				}
 
-module.exports = {
-	apply: function (css, options) {
-		apply.call(css, options);
-	},
-	valueToPixels: valueToPixels,
-	remToPixels: remToPixels
-};
+				var value = rule.value.replace(/([0-9\.]+)rem/, function (match) {
+					return remToPixels(match, rem);
+				});
+
+				if (rule.value !== value) {
+					this.addRule(new tree.rule(rule.name, value), rule.index());
+				}
+			}, this);
+		});
+	};
+})(require('../plugins'));
