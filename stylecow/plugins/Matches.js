@@ -1,25 +1,27 @@
-var Utils = require('../Utils.js');
+var utils = require('../utils.js');
 
-var apply = function (options) {
-	this.executeRecursive(function () {
-		while (this.selector.toString().indexOf(':matches(') !== -1) {
-			this.selector.selectors.forEach(function (selector, key) {
-				var match = selector.match(/:matches\(([^\)]*)\)/);
+(function (plugins) {
+	plugins.matches = function (css) {
+		css.executeRecursive(function () {
+			if (!this.selector) {
+				return;
+			}
 
-				if (match) {
-					this.selector.remove(key);
+			while (this.selector.toString().indexOf(':matches(') !== -1) {
+				this.selector.selectors.forEach(function (selector, key) {
+					var match = selector.match(/:matches\(([^\)]*)\)/);
 
-					Utils.explodeTrim(',', match[1]).forEach(function (matchSelector) {
-						this.selector.add(selector.replace(match[0], matchSelector));
-					}, this);
-				}
-			}, this);
-		}
-	});
-};
+					if (match) {
+						this.selector.remove(key);
 
-module.exports = {
-	apply: function (css, options) {
-		apply.call(css, options);
-	}
-};
+						utils.explodeTrim(',', match[1]).forEach(function (matchSelector) {
+							this.selector.add(selector.replace(match[0], matchSelector));
+						}, this);
+					}
+				}, this);
+			}
+		});
+	};
+
+	plugins.matches.support = '*';
+})(require('../plugins'));

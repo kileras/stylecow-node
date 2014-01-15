@@ -143,18 +143,22 @@ var initials = {
 	'z-index': 'auto'
 };
 
-var apply = function (options) {
-	this.executeRecursive(function () {
-		this.properties.forEach(function (property) {
-			if (property.value === 'initial') {
-				property.value = initials[property.name] || 'inherit';
-			}
+(function (plugins) {
+	plugins.rem = function (css) {
+		css.executeRecursive(function () {
+			this.rules.forEach(function (rule) {
+				if (rule.value === 'initial') {
+					rule.value = initials[rule.name] || 'inherit';
+				}
+			});
 		});
-	});
-};
+	};
 
-module.exports = {
-	apply: function (css, options) {
-		apply.call(css, options);
+	plugins.rem.support = {
+		'firefox': '19.0',
+		'explorer': '*',
+		'chrome': '1.0',
+		'safari': '1.2',
+		'opera': '15.0'
 	}
-};
+})(require('../plugins'));
