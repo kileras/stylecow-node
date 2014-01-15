@@ -56,10 +56,12 @@ var remToPixels = function (value, rootPixels) {
 	};
 
 	plugins.rem.support = {
-		'firefox': '3.5',
-		'explorer': '8.0',
-		'safari': '4.0',
-		'opera': '11.5',
-		'ios': '3.2'
-	}
+		'firefox': 3.6,
+		'explorer': 9.0,
+		'safari': 5.0,
+		'opera': 11.6,
+		'ios': 4.0
+	};
+
+	plugins.rem.enabled = true;
 })(require('../plugins'));

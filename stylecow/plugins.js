@@ -1,7 +1,23 @@
 (function (plugins) {
-	require('./plugins/rem');
-	require('./plugins/nestedRules');
-	require('./plugins/matches');
-	require('./plugins/initial');
-
+	[
+	'color',
+	'ffBorderRadius',
+	'ieBackgroundAlpha',
+	'ieClip',
+	'ieFloat',
+	'ieInlineBlock',
+	'ieLinearGradient',
+	'ieMinHeight',
+	'ieOpacity',
+	'ieTransform',
+	'initial',
+	'linearGradient',
+	'matches',
+	'nestedRules',
+	'rem',
+	'variables',
+	'vendorPrefixes'
+	].forEach(function (pluginName) {
+		require('./plugins/' + pluginName);
+	});
 })(require('./plugins'));

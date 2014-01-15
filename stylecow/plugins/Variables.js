@@ -1,39 +1,37 @@
-var apply = function (options) {
-	var variables = {};
+(function (plugins) {
+	plugins.variables = function (css) {
+		var variables = {};
 
-	this.getChildren([':root', 'html']).forEach(function (css) {
-		css.properties.forEach(function (property) {
-			if (property.name.indexOf('var-') === 0) {
-				variables[property.name.substr(4)] = property.value;
+		css.getChildren([':root', 'html']).forEach(function (css) {
+			css.rules.forEach(function (rule) {
+				if (rule.name.indexOf('var-') === 0) {
+					variables[rule.name.substr(4)] = rule.value;
 
-				property.parent.removeProperty(property.index());
-			}
+					rule.parent.removeProperty(rule.index());
+				}
+			});
 		});
-	});
 
-	this.executeRecursive(function (variables) {
-		this.properties.forEach(function (property) {
-			if (property.name.indexOf('var-') === 0) {
-				variables[property.name.substr(4)] = property.value;
+		css.executeRecursive(function (variables) {
+			this.rules.forEach(function (rule) {
+				if (rule.name.indexOf('var-') === 0) {
+					variables[rule.name.substr(4)] = rule.value;
 
-				property.parent.removeProperty(property.index());
-			} else {
-				property.executeFunctions(function (name, params) {
-					var variable = params[0];
+					rule.parent.removeRule(rule.index());
+				} else {
+					rule.executeFunctions(function (name, params) {
+						var variable = params[0];
 
-					if (!variable || !variables[variable]) {
-						return params[1];
-					}
+						if (!variable || !variables[variable]) {
+							return params[1];
+						}
 
-					return variables[variable];
-				}, 'var');
-			}
-		});
-	}, variables);
-};
+						return variables[variable];
+					}, 'var');
+				}
+			});
+		}, variables);
+	};
 
-module.exports = {
-	apply: function (css, options) {
-		apply.call(css, options);
-	}
-};
+	plugins.variables.enabled = true;
+})(require('../plugins'));

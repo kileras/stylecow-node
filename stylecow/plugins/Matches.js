@@ -1,4 +1,4 @@
-var utils = require('../utils.js');
+var utils = require('../utils');
 
 (function (plugins) {
 	plugins.matches = function (css) {
@@ -23,5 +23,5 @@ var utils = require('../utils.js');
 		});
 	};
 
-	plugins.matches.support = '*';
+	plugins.matches.enabled = true;
 })(require('../plugins'));

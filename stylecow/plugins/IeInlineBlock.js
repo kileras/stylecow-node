@@ -1,27 +1,29 @@
-var Property = require('../Property.js');
+var tree = require('../tree');
 
-var apply = function (options) {
-	this.executeRecursive(function () {
-		var property = this.getProperties('display', 'inline-block').pop();
+(function (plugins) {
+	plugins.ieInlineBlock = function (css) {
+		css.executeRecursive(function () {
+			var rule = this.getRules('display', 'inline-block').pop();
 
-		if (property) {
-			if (!this.hasProperty(['zoom', '*zoom'])) {
-				this.addProperty(Property.create('*zoom', 1)).vendor = 'ms';
+			if (rule) {
+				if (!this.hasRule(['zoom', '*zoom'])) {
+					this.addRule(new tree.rule('*zoom', '1')).vendor = 'ms';
+				}
+				if (!this.hasRule('*display')) {
+					this.addRule(new tree.rule('*display', 'inline'));
+				}
+
+				//It's not necessary but cleaner
+				if ((rule = this.getRules('_display').pop())) {
+					this.removeRule(rule.index());
+				}
 			}
-			if (!this.hasProperty('*display')) {
-				this.addProperty(Property.create('*display', 'inline'));
-			}
+		});
+	};
 
-			//It's not necessary but cleaner
-			if ((property = this.getProperties('_display').pop())) {
-				this.removeProperty(property.index());
-			}
-		}
-	});
-};
+	plugins.ieInlineBlock.support = {
+		'explorer': 8.0
+	};
 
-module.exports = {
-	apply: function (css, options) {
-		apply.call(css, options);
-	}
-};
+	plugins.ieInlineBlock.enabled = true;
+})(require('../plugins'));

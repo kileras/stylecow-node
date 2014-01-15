@@ -1,17 +1,19 @@
-var Property = require('../Property.js');
+var tree = require('../tree');
 
-var apply = function (options) {
-	this.executeRecursive(function () {
-		var property = this.getProperties('min-height').pop();
+(function (plugins) {
+	plugins.ieMinHeight = function (css) {
+		css.executeRecursive(function () {
+			var rule = this.getRules('min-height').pop();
 
-		if (property && !this.hasProperty(['_height', '*height', 'height'])) {
-			this.addProperty(Property.create('_height', property.value)).vendor = 'ms';
-		}
-	});
-};
+			if (rule && !this.hasRule(['_height', '*height', 'height'])) {
+				this.addRule(new tree.rule('_height', rule.value)).vendor = 'ms';
+			}
+		});
+	};
 
-module.exports = {
-	apply: function (css, options) {
-		apply.call(css, options);
-	}
-};
+	plugins.ieMinHeight.support = {
+		'explorer': 7.0
+	};
+
+	plugins.ieMinHeight.enabled = true;
+})(require('../plugins'));

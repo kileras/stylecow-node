@@ -23,9 +23,9 @@
 			this.name = name;
 			this.value = value;
 
-			var match = name.match(/^\-(\w+)\-/);
+			var vendor = name.match(/^\-(\w+)\-/) || value.match(/^\-(\w+)\-/);
 
-			this.vendor = match ? match[0] : null;
+			this.vendor = vendor ? vendor[0] : null;
 		},
 		is: function (name, value) {
 			if (name instanceof Array) {

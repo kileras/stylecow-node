@@ -1,31 +1,43 @@
-var Property = require('../Property.js'),
-	Color = require('./Color.js');
+var color = require('../color');
 
-var getFilter = function (color) {
-	color = Color.toRGBA(color);
-	color = '#' + Math.round(255 * color[3]).toString(16) + Color.RGBA_HEX(color);
+var getFilter = function (rgba) {
+	var ahex = '#' + Math.round(255 * rgba[3]).toString(16) + color.RGBA_HEX(rgba);
 
-	return 'progid:DXImageTransform.Microsoft.gradient(startColorStr=\'' + color + '\', endColorStr=\'' + color + '\')';
-}
-
-var apply = function (options) {
-	this.executeRecursive(function () {
-		var property = this.getProperties(['background', 'background-color']).pop();
-
-		if (property) {
-			property.executeFunctions(function (name, params, fnString) {
-				this.parent.addMsFilterProperty(getFilter(fnString));
-			}, 'rgba');
-
-			property.executeFunctions(function (name, params, fnString) {
-				this.parent.addMsFilterProperty(getFilter(fnString));
-			}, 'hsla');
-		}
-	});
+	return 'progid:DXImageTransform.Microsoft.gradient(startColorStr=\'' + ahex + '\', endColorStr=\'' + ahex + '\')';
 };
 
-module.exports = {
-	apply: function (css, options) {
-		apply.call(css, options);
-	}
-};
+(function (plugins) {
+	plugins.ieBackgroundAlpha = function (css) {
+		css.executeRecursive(function () {
+			var rule = this.getRules(['background', 'background-color']).pop();
+
+			if (rule) {
+				rule.executeFunctions(function (name, params, fnString) {
+					var rgba = color.toRGBA(fnString);
+
+					if (rgba[3] === 1) {
+						return '#' + color.RGBA_HEX(rgba);
+					}
+
+					this.parent.addMsFilter(getFilter(rgba));
+				}, 'rgba');
+
+				rule.executeFunctions(function (name, params, fnString) {
+					var rgba = color.toRGBA(fnString);
+
+					if (rgba[3] === 1) {
+						return '#' + color.RGBA_HEX(rgba);
+					}
+
+					this.parent.addMsFilter(getFilter(rgba));
+				}, 'hsla');
+			}
+		});
+	};
+
+	plugins.ieBackgroundAlpha.support = {
+		'explorer': 9.0
+	};
+
+	plugins.ieBackgroundAlpha.enabled = true;
+})(require('../plugins'));

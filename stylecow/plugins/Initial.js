@@ -144,7 +144,7 @@ var initials = {
 };
 
 (function (plugins) {
-	plugins.rem = function (css) {
+	plugins.initial = function (css) {
 		css.executeRecursive(function () {
 			this.rules.forEach(function (rule) {
 				if (rule.value === 'initial') {
@@ -154,11 +154,12 @@ var initials = {
 		});
 	};
 
-	plugins.rem.support = {
-		'firefox': '19.0',
-		'explorer': '*',
-		'chrome': '1.0',
-		'safari': '1.2',
-		'opera': '15.0'
-	}
+	plugins.initial.support = {
+		'firefox': 19.0,
+		'chrome': 1.0,
+		'safari': 1.2,
+		'opera': 15.0
+	};
+
+	plugins.initial.enabled = true;
 })(require('../plugins'));

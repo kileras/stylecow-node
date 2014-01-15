@@ -1,15 +1,17 @@
-var Property = require('../Property.js');
+var tree = require('../tree');
 
-var apply = function (options) {
-	this.executeRecursive(function () {
-		if (this.hasProperty('float', ['right', 'left']) && !this.hasProperty(['display', '_display', '*display'], 'inline')) {
-			this.addProperty(Property.create('_display', 'inline')).vendor = 'ms';
-		}
-	});
-};
+(function (plugins) {
+	plugins.ieFloat = function (css) {
+		css.executeRecursive(function () {
+			if (this.hasRule('float', ['right', 'left']) && !this.hasRule(['display', '_display', '*display'], 'inline')) {
+				this.addRule(new tree.rule('_display', 'inline')).vendor = 'ms';
+			}
+		});
+	};
 
-module.exports = {
-	apply: function (css, options) {
-		apply.call(css, options);
-	}
-};
+	plugins.ieFloat.support = {
+		'explorer': 7.0
+	};
+
+	plugins.ieFloat.enabled = true;
+})(require('../plugins'));

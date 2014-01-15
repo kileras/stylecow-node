@@ -25,49 +25,48 @@ var getRotateFilter = function (value) {
 
 			return 'progid:DXImageTransform.Microsoft.Matrix(sizingMethod="auto expand", M11 = ' + cos + ', M12 = ' + (-sin) + ', M21 = ' + sin + ', M22 = ' + cos + ')';
 	}
-}
+};
 
+(function (plugins) {
+	plugins.ieTransform = function (css) {
+		css.executeRecursive(function () {
+			var rule = this.getRules('transform').pop(), that = this;
 
-var apply = function (options) {
-	this.executeRecursive(function () {
-		var property = this.getProperties('transform').pop();
-
-		if (!property) {
-			return;
-		}
-
-		var that = this;
-
-		property.executeFunctions(function (name, params) {
-			switch (name) {
-				case 'rotate':
-					that.addMsFilterProperty(getRotateFilter(params[0]));
-					break;
-
-				case 'scaleX':
-					if (params[0] == -1) {
-						that.addMsFilterProperty('flipH');
-					}
-					return;
-
-				case 'scaleY':
-					if (params[0] == -1) {
-						that.addMsFilterProperty('flipV');
-					}
-					return;
-
-				case 'scale':
-					if (params[0] == -1 && params[1] == -1) {
-						that.addMsFilterProperty('flipH, flipV');
-					}
-					return;
+			if (!rule) {
+				return;
 			}
-		});
-	});
-};
 
-module.exports = {
-	apply: function (css, options) {
-		apply.call(css, options);
-	}
-};
+			rule.executeFunctions(function (name, params) {
+				switch (name) {
+					case 'rotate':
+						that.addMsFilter(getRotateFilter(params[0]));
+						break;
+
+					case 'scaleX':
+						if (params[0] == -1) {
+							that.addMsFilter('flipH');
+						}
+						return;
+
+					case 'scaleY':
+						if (params[0] == -1) {
+							that.addMsFilter('flipV');
+						}
+						return;
+
+					case 'scale':
+						if (params[0] == -1 && params[1] == -1) {
+							that.addMsFilter('flipH, flipV');
+						}
+						return;
+				}
+			});
+		});
+	};
+
+	plugins.ieTransform.support = {
+		'explorer': 9.0
+	};
+
+	plugins.ieTransform.enabled = true;
+})(require('../plugins'));

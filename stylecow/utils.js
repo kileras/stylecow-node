@@ -1,4 +1,4 @@
-var Utils = {
+var utils = {
 	explode: function (delimiter, string, limit, strs_in, strs_out) {
 		if (!string) {
 			return [];
@@ -72,7 +72,7 @@ var Utils = {
 	},
 	explodeTrim: function (delimiter, string, limit, strs_in, strs_out) {
 		var array = [],
-			exploded = Utils.explode(delimiter, string, limit, strs_in, strs_out);
+			exploded = utils.explode(delimiter, string, limit, strs_in, strs_out);
 
 		for (var i = 0, total = exploded.length; i < total; i++) {
 			var text_value = exploded[i].trim();
@@ -142,7 +142,7 @@ var Utils = {
 			}
 
 			var parameters = string.slice(index + 1, end - 1);
-			var result = callback.call(thisCallback, name, Utils.explodeTrim(',', parameters), string.slice(start, end));
+			var result = callback.call(thisCallback, name, utils.explodeTrim(',', parameters), string.slice(start, end));
 
 			if (result !== undefined) {
 				string = string.slice(0, start) + result.substr(0, end - start) + result.slice(end - start) + string.slice(end);
@@ -184,8 +184,24 @@ var Utils = {
 		}
 
 		return obj;
+	},
+	needSupport: function (browsers, featureSupport) {
+		if (featureSupport === false) {
+			return true;
+		}
+
+		for (var browser in browsers) {
+			if (!(browser in featureSupport)) {
+				continue;
+			}
+
+			if (browsers[browser] < featureSupport[browser]) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 };
 
-
-module.exports = Utils;
+module.exports = utils;

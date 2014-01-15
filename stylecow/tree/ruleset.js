@@ -105,7 +105,7 @@
 		removeRule: function (index) {
 			this.rules.splice(index, 1);
 		},
-		addMsFilterRule: function (filter) {
+		addMsFilter: function (filter) {
 			var rule = this.getRules('filter').pop();
 
 			if (rule) {
@@ -116,7 +116,7 @@
 				}
 				rule.vendor = 'ms';
 			} else {
-				this.addRule(new tree.rule.create('filter', filter)).vendor = 'ms';
+				this.addRule(new tree.rule('filter', filter)).vendor = 'ms';
 			}
 		},
 		setSelector: function (selector) {

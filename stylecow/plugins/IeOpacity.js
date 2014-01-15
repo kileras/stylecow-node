@@ -1,17 +1,17 @@
-var Property = require('../Property.js');
+(function (plugins) {
+	plugins.ieOpacity = function (css) {
+		css.executeRecursive(function () {
+			var rule = this.getRules('opacity').pop();
 
-var apply = function (options) {
-	this.executeRecursive(function () {
-		var property = this.getProperties('opacity').pop();
+			if (rule) {
+				this.addMsFilter('alpha(opacity=' + (parseFloat(rule.value, 10) * 100) + ')');
+			}
+		});
+	};
 
-		if (property) {
-			this.addMsFilterProperty('alpha(opacity=' + (parseFloat(property.value, 10) * 100) + ')');
-		}
-	});
-};
+	plugins.ieOpacity.support = {
+		'explorer': 9.0
+	};
 
-module.exports = {
-	apply: function (css, options) {
-		apply.call(css, options);
-	}
-};
+	plugins.ieOpacity.enabled = true;
+})(require('../plugins'));

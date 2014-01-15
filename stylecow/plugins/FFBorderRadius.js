@@ -1,38 +1,40 @@
-var Property = require('../Property.js');
+var tree = require('../tree');
 
-var apply = function (options) {
-	this.executeRecursive(function () {
-		this.getProperties().forEach(function (property) {
-			var newName;
+(function (plugins) {
+	plugins.ffBorderRadius = function (css) {
+		css.executeRecursive(function () {
+			this.getRules().forEach(function (rule) {
+				var newName;
 
-			switch (property.name) {
-				case 'border-top-left-radius':
-					newName = '-moz-border-radius-topleft';
-					break;
+				switch (rule.name) {
+					case 'border-top-left-radius':
+						newName = '-moz-border-radius-topleft';
+						break;
 
-				case 'border-top-right-radius':
-					newName = '-moz-border-radius-topright';
-					break;
+					case 'border-top-right-radius':
+						newName = '-moz-border-radius-topright';
+						break;
 
-				case 'border-bottom-left-radius':
-					newName = '-moz-border-radius-bottomleft';
-					break;
+					case 'border-bottom-left-radius':
+						newName = '-moz-border-radius-bottomleft';
+						break;
 
-				case 'border-bottom-right-radius':
-					newName = '-moz-border-radius-bottomright';
-					break;
+					case 'border-bottom-right-radius':
+						newName = '-moz-border-radius-bottomright';
+						break;
 
-				default:
-					return;
-			}
+					default:
+						return;
+				}
 
-			property.parent.addProperty(Property.create(newName, property.value), property.index()).vendor = 'moz';
+				rule.parent.addRule(new tree.rule(newName, rule.value), rule.index());
+			});
 		});
-	});
-};
+	};
 
-module.exports = {
-	apply: function (css, options) {
-		apply.call(css, options);
-	}
-};
+	plugins.ffBorderRadius.support = {
+		'firefox': 13.0
+	};
+
+	plugins.ffBorderRadius.enabled = true;
+})(require('../plugins'));
