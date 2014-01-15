@@ -35,4 +35,6 @@ var mergeNestedRules = function (css, pos) {
 			k++;
 		}
 	};
+
+	plugins.nestedRules.enabled = true;
 })(require('../plugins'));
