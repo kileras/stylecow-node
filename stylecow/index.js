@@ -9,7 +9,13 @@ var styleCow = {
 		return parser.parseRuleset(code);
 	},
 	transform: function (css) {
-		plugins.rem(css);
+		for (var name in plugins) {
+			var plugin = plugins[name];
+
+			if (plugin.support) {
+				plugins[name](css);
+			}
+		}
 	}
 };
 

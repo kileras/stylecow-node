@@ -54,4 +54,12 @@ var remToPixels = function (value, rootPixels) {
 			}, this);
 		});
 	};
+
+	plugins.rem.support = {
+		'firefox': '3.5',
+		'explorer': '8.0',
+		'safari': '4.0',
+		'opera': '11.5',
+		'ios': '3.2'
+	}
 })(require('../plugins'));

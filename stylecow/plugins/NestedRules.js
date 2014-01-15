@@ -1,5 +1,5 @@
-var mergeNestedRules = function (pos) {
-	var child = this.children[pos],
+var mergeNestedRules = function (css, pos) {
+	var child = css.children[pos],
 		childSelectors = child.selector.selectors;
 
 	while (child.children.length) {
@@ -16,27 +16,23 @@ var mergeNestedRules = function (pos) {
 			});
 		});
 
-		this.addChild(nested, pos++, true);
+		css.addChild(nested, pos++, true);
 	}
 };
 
 
-var apply = function (options) {
-	var k = 0, child, childSelectors;
+(function (plugins) {
+	plugins.nestedRules = function (css) {
+		var k = 0, child, childSelectors;
 
-	while (this.children[k]) {
-		if (!this.children[k].selector.type) {
-			mergeNestedRules.call(this, k);
-		} else {
-			apply.call(this.children[k]);
+		while (css.children[k]) {
+			if (!css.children[k].selector.type) {
+				mergeNestedRules(css, k);
+			} else {
+				plugins.nestedRules(css.children[k]);
+			}
+
+			k++;
 		}
-
-		k++;
-	}
-};
-
-module.exports = {
-	apply: function (css, options) {
-		apply.call(css, options);
-	}
-};
+	};
+})(require('../plugins'));
