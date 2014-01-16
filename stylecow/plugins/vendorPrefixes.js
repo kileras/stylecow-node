@@ -89,10 +89,15 @@ var vendorPrefixes = {
 				'moz': false
 			}
 		},{
-			'regexp': /^border-(.*)radius$/,
+			'regexp': /^border-radius$/,
 			'prefixes': {
 				'webkit': {'chrome': 4.0, 'safari': 4.0, 'ios': 3.2, 'android': 2.1},
 				'moz': {'firefox': 3.6}
+			}
+		},{
+			'regexp': /^border-(.*)-radius$/,
+			'prefixes': {
+				'webkit': {'chrome': 4.0, 'safari': 4.0, 'ios': 3.2, 'android': 2.1}
 			}
 		},{
 			'regexp': /^box-shadow$/,
@@ -206,78 +211,73 @@ var vendorPrefixes = {
 );
 */
 
-(function (plugins) {
-	plugins.vendorPrefixes = function (css, support) {
-		css.executeRecursive(function () {
-			if (this.selector) {
-				var selectorString = this.selector.toString();
+module.exports = {
+	selector: function (data, support) {
+		var selectorString = this.toString();
+		var ruleset = this.parent;
 
-				vendorPrefixes.selectors.forEach(function (vendor) {
-					if (vendor.regexp.test(selectorString)) {
-						var index = this.index();
+		vendorPrefixes.selectors.forEach(function (vendor) {
+			if (vendor.regexp.test(selectorString)) {
+				var index = ruleset.index();
 
-						for (var prefix in vendor.prefixes) {
-							if (!utils.needSupport(support, vendor.prefixes[prefix])) {
-								continue;
+				for (var prefix in vendor.prefixes) {
+					if (!utils.needSupport(support, vendor.prefixes[prefix])) {
+						continue;
+					}
+
+					var child = ruleset.clone();
+
+					child.selector.selectors.forEach(function (selector, index) {
+						child.selector.selectors[index] = selector.replace(vendor.regexp, function (matches) {
+							if (matches[1] === ':') {
+								return '::-' + prefix + '-' + matches.substr(2);
 							}
 
-							var child = this.clone();
+							if (matches[0] === '@') {
+								return '@-' + prefix + '-' + matches.substr(1);
+							}
 
-							child.selector.selectors.forEach(function (selector, index) {
-								child.selector.selectors[index] = selector.replace(vendor.regexp, function (matches) {
-									if (matches[1] === ':') {
-										return '::-' + prefix + '-' + matches.substr(2);
-									}
+							return '-' + prefix + '-' + matches;
+						});
+					});
 
-									if (matches[0] === '@') {
-										return '@-' + prefix + '-' + matches.substr(1);
-									}
-
-									return '-' + prefix + '-' + matches;
-								});
-							});
-
-							this.parent.addChild(child, index).vendor = prefix;
-						}
-					}
-				}, this);
+					ruleset.parent.addChild(child, index).vendor = prefix;
+				}
 			}
+		});
+	},
+	rule: function (data, support) {
+		vendorPrefixes.rules.forEach(function (vendor) {
+			if (vendor.regexp.test(this.name)) {
+				var index = this.index();
 
-			this.getRules().forEach(function (rule) {
-				vendorPrefixes.rules.forEach(function (vendor) {
-					if (vendor.regexp.test(rule.name)) {
-						var index = rule.index();
+				if (vendor.prefixes) {
+					for (var prefix in vendor.prefixes) {
+						if (utils.needSupport(support, vendor.prefixes[prefix])) {
+							var name = '-' + prefix + '-' + this.name;
 
-						if (vendor.prefixes) {
-							for (var prefix in vendor.prefixes) {
+							this.parent.addRule(new tree.rule(name, this.value), index).vendor = prefix;
+						}
+					}
+				}
+
+				if (vendor.values) {
+					vendor.values.forEach(function (vendor) {
+						if (vendor.regexp.test(this.value)) {
+							for (prefix in vendor.prefixes) {
 								if (utils.needSupport(support, vendor.prefixes[prefix])) {
-									var name = '-' + prefix + '-' + rule.name;
+									var value = this.value.replace(vendor.regexp, function (matches) {
+										return '-' + prefix + '-' + matches;
+									});
 
-									rule.parent.addRule(new tree.rule(name, rule.value), index).vendor = prefix;
+									this.parent.addRule(new tree.rule(this.name, value), index).vendor = prefix;
 								}
 							}
 						}
-
-						if (vendor.values) {
-							vendor.values.forEach(function (vendor) {
-								if (vendor.regexp.test(rule.value)) {
-									for (prefix in vendor.prefixes) {
-										if (utils.needSupport(support, vendor.prefixes[prefix])) {
-											var value = rule.value.replace(vendor.regexp, function (matches) {
-												return '-' + prefix + '-' + matches;
-											});
-
-											rule.parent.addRule(new tree.rule(rule.name, value), index).vendor = prefix;
-										}
-									}
-								}
-							});
-						}
-					}
-				});
-			});
-		});
-	};
-
-	plugins.vendorPrefixes.enabled = true;
-})(require('../plugins'));
+					}, this);
+				}
+			}
+		}, this);
+	},
+	enabled: true
+};

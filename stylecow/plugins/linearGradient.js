@@ -67,62 +67,52 @@ var getWebkitOldSyntax = function (params) {
 	return '-webkit-gradient(linear, ' + start + ', ' + end + ', '+ colors.join(', ') + ')';
 };
 
-(function (plugins) {
-	plugins.linearGradient = function (css) {
-		css.executeRecursive(function () {
-			var rule = this.getRules(['background', 'background-image']).pop();
-
-			if (rule) {
-				var search, replace;
-
-				rule.executeFunctions(function (name, params, fnString) {
-					switch (params[0]) {
-						case 'to top':
-							params[0] = 'bottom';
-							break;
-
-						case 'to bottom':
-							params[0] = 'top';
-							break;
-
-						case 'to left':
-							params[0] = 'right';
-							break;
-
-						case 'to right':
-							params[0] = 'left';
-							break;
-
-						default:
-							return;
-					}
-
-					search = fnString;
-					replace = params;
-				}, 'linear-gradient');
-
-				if (search) {
-					var index = rule.index();
-
-					this.addRule(new tree.rule(rule.name, rule.value.replace(search, getWebkitOldSyntax(replace))), index).vendor = 'webkit';
-
-					replace = replace.join(', ');
-					this.addRule(new tree.rule(rule.name, rule.value.replace(search, '-moz-linear-gradient(' + replace + ')')), index).vendor = 'moz';
-					this.addRule(new tree.rule(rule.name, rule.value.replace(search, '-webkit-linear-gradient(' + replace + ')')), index).vendor = 'webkit';
-					this.addRule(new tree.rule(rule.name, rule.value.replace(search, '-o-linear-gradient(' + replace + ')')), index).vendor = 'o';
-				}
+module.exports = {
+	functions: {
+		'linear-gradient': function (fn) {
+			if (!this.is(['background', 'background-image'])) {
+				return;
 			}
-		});
-	};
 
-	plugins.linearGradient.support = {
+			var params = utils.clone(fn.params);
+
+			switch (params[0]) {
+				case 'to top':
+					params[0] = 'bottom';
+					break;
+
+				case 'to bottom':
+					params[0] = 'top';
+					break;
+
+				case 'to left':
+					params[0] = 'right';
+					break;
+
+				case 'to right':
+					params[0] = 'left';
+					break;
+
+				default:
+					return;
+			}
+
+			var index = this.index();
+			var replace = params.join(', ');
+
+			this.parent.addRule(new tree.rule(this.name, this.value.replace(fn.string, getWebkitOldSyntax(params))), index).vendor = 'webkit';
+			this.parent.addRule(new tree.rule(this.name, this.value.replace(fn.string, '-moz-linear-gradient(' + replace + ')')), index).vendor = 'moz';
+			this.parent.addRule(new tree.rule(this.name, this.value.replace(fn.string, '-webkit-linear-gradient(' + replace + ')')), index).vendor = 'webkit';
+			this.parent.addRule(new tree.rule(this.name, this.value.replace(fn.string, '-o-linear-gradient(' + replace + ')')), index).vendor = 'o';
+		}
+	},
+	enabled: true,
+	support: {
 		'explorer': 10.0,
 		'chrome': 26.0,
 		'opera': 12.1,
 		'safari': 6.1,
 		'ios': 7.0,
 		'android': 4.4
-	};
-
-	plugins.linearGradient.enabled = true;
-})(require('../plugins'));
+	}
+};

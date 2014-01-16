@@ -1,33 +1,5 @@
-var styleCow = require('./stylecow/index.js');
+var styleCow = require('./stylecow');
 
-var css = styleCow.loadFile('./test2.css');
+var css = styleCow.loadFile('./test.css').transform().toString();
 
-styleCow.transform(css);
-
-console.log(css.toString());
-
-
-
-//console.log(result);
-
-//styleCow.transform(css);
-/*
-css.transform(function () {
-	
-}, function () {
-	if (this.name === 'opacity') {
-		this.parent.addMsFilter('alpha(opacity=' + (parseFloat(this.value, 10) * 100) + ')');
-	}
-}, function () {
-	
-});
-
-console.log(css.toString());
-*/
-
-/*
-BaseUrl
-Grid
-Math
-MediaQuery
-*/
+console.log(css);

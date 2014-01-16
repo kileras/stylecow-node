@@ -12,10 +12,10 @@
 		return result;
 	};
 
-	var executePlugins = function (plugins, name, thisParam) {
+	var executePlugins = function (plugins, name, thisParam, support) {
 		plugins.forEach(function (plugin) {
 			if (plugin[name]) {
-				plugin[name].call(thisParam, plugin.data);
+				plugin[name].call(thisParam, plugin.data, support);
 			}
 		});
 	};
@@ -99,14 +99,14 @@
 
 			return false;
 		},
-		addRule: function (rule, index) {
-			rule.setParent(this);
-
-			if (index === undefined) {
+		addRule: function (rule, index, after) {
+			if (index === undefined || (after && index === this.rules.length)) {
 				this.rules.push(rule);
 			} else {
-				this.rules.splice(index, 0, rule);
+				this.rules.splice(after ? index + 1 : index, 0, rule);
 			}
+
+			rule.setParent(this);
 
 			return rule;
 		},
@@ -159,13 +159,13 @@
 
 			return this;
 		},
-		transform: function (plugins) {
-			executePlugins(plugins, 'children', this);
+		transform: function (plugins, support) {
+			executePlugins(plugins, 'children', this, support);
 
 			if (this.selector) {
-				executePlugins(plugins, 'selector', this.selector);
-			} else {
-				executePlugins(plugins, 'init', this);
+				executePlugins(plugins, 'selector', this.selector, support);
+			} else if (!this.parent) {
+				executePlugins(plugins, 'init', this, support);
 			}
 
 			var k = 0;
@@ -177,18 +177,22 @@
 
 					plugins.forEach(function (plugin) {
 						if (plugin.functions && plugin.functions[name]) {
-							result = plugin.functions[name].call(rule, fnInfo, plugin.data);
+							result = plugin.functions[name].call(rule, {
+								string: fnInfo.string,
+								name: fnInfo.name,
+								params: utils.clone(fnInfo.params)
+							}, plugin.data, support);
 						}
 					});
 
 					return result;
 				});
 
-				executePlugins(plugins, 'rule', rule);
+				executePlugins(plugins, 'rule', rule, support);
 			});
 
 			this.getChildren().forEach(function (child) {
-				child.transform(plugins);
+				child.transform(plugins, support);
 			});
 		},
 		toString: function (options) {

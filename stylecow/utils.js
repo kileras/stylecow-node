@@ -191,7 +191,7 @@ var utils = {
 		return obj;
 	},
 	needSupport: function (browsers, featureSupport) {
-		if (featureSupport === false) {
+		if (!featureSupport) {
 			return true;
 		}
 

@@ -1,21 +1,6 @@
 var plugins = {};
 
 [
-	'ieMinHeight',
-	'ieOpacity',
-	'initial',
-	'matches',
-	'rem',
-	'variables',
-].forEach(function (pluginName) {
-	plugins[pluginName] = require('./plugins/' + pluginName);
-});
-
-module.exports = plugins;
-
-/*
-(function (plugins) {
-	[
 	'color',
 	'ffBorderRadius',
 	'ieBackgroundAlpha',
@@ -26,14 +11,15 @@ module.exports = plugins;
 	'ieMinHeight',
 	'ieOpacity',
 	'ieTransform',
-	
+	'initial',
 	'linearGradient',
-	
+	'matches',
 	'nestedRules',
-	
+	'rem',
+	'variables',
 	'vendorPrefixes'
-	].forEach(function (pluginName) {
-		require('./plugins/' + pluginName);
-	});
-})(require('./plugins'));
-*/
+].forEach(function (pluginName) {
+	plugins[pluginName] = require('./plugins/' + pluginName);
+});
+
+module.exports = plugins;
