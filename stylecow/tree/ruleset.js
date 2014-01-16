@@ -12,6 +12,14 @@
 		return result;
 	};
 
+	var executePlugins = function (plugins, name, thisParam) {
+		plugins.forEach(function (plugin) {
+			if (plugin[name]) {
+				plugin[name].call(thisParam, plugin.data);
+			}
+		});
+	};
+
 	tree.ruleset = function (selector) {
 		this.parent = null;
 		this.selector = null;
@@ -151,35 +159,37 @@
 
 			return this;
 		},
-		executeRecursive: function (fn, data) {
-			var propagateData = utils.clone(data);
-
-			fn.call(this, propagateData);
-
-			this.getChildren().forEach(function (child) {
-				child.executeRecursive(fn, propagateData);
-			});
-		},
-		transform: function (selectorfn, rulefn, childrenfn) {
-			childrenfn.call(this);
+		transform: function (plugins) {
+			executePlugins(plugins, 'children', this);
 
 			if (this.selector) {
-				selectorfn.call(this.selector);
+				executePlugins(plugins, 'selector', this.selector);
+			} else {
+				executePlugins(plugins, 'init', this);
 			}
 
 			var k = 0;
 
-			while (this.rules[k]) {
-				rulefn.call(this.rules[k]);
-				k++;
-			}
+			this.getRules().forEach(function (rule) {
+				rule.value = utils.executeFunctions(rule.value, function (fnInfo) {
+					var name = fnInfo.name;
+					var result;
 
-			k = 0;
+					plugins.forEach(function (plugin) {
+						if (plugin.functions && plugin.functions[name]) {
+							result = plugin.functions[name].call(rule, fnInfo, plugin.data);
+						}
+					});
 
-			while (this.children[k]) {
-				this.children[k].transform(selectorfn, rulefn, childrenfn);
-				k++;
-			}
+					return result;
+				});
+
+				executePlugins(plugins, 'rule', rule);
+			});
+
+			this.getChildren().forEach(function (child) {
+				child.transform(plugins);
+			});
 		},
 		toString: function (options) {
 			options = utils.clone(options) || {};

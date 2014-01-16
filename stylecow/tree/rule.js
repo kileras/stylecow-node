@@ -76,9 +76,6 @@
 
 			return this;
 		},
-		executeFunctions: function (callback, name) {
-			this.value = utils.executeFunctions(this.value, name, callback, this);
-		},
 		toString: function () {
 			comments = this.comments.length ? ' /*' + this.comments.join(', ') + '*/' : '';
 

@@ -2,8 +2,16 @@ var styleCow = require('./stylecow/index.js');
 
 var css = styleCow.loadFile('./test2.css');
 
-//styleCow.transform(css);
+styleCow.transform(css);
 
+console.log(css.toString());
+
+
+
+//console.log(result);
+
+//styleCow.transform(css);
+/*
 css.transform(function () {
 	
 }, function () {
@@ -15,7 +23,7 @@ css.transform(function () {
 });
 
 console.log(css.toString());
-
+*/
 
 /*
 BaseUrl

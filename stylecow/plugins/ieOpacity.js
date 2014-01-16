@@ -1,17 +1,11 @@
-(function (plugins) {
-	plugins.ieOpacity = function (css) {
-		css.executeRecursive(function () {
-			var rule = this.getRules('opacity').pop();
-
-			if (rule) {
-				this.addMsFilter('alpha(opacity=' + (parseFloat(rule.value, 10) * 100) + ')');
-			}
-		});
-	};
-
-	plugins.ieOpacity.support = {
+module.exports = {
+	rule: function () {
+		if (this.name === 'opacity') {
+			this.parent.addMsFilter('alpha(opacity=' + (parseFloat(this.value, 10) * 100) + ')');
+		}
+	},
+	enabled: true,
+	support: {
 		'explorer': 9.0
-	};
-
-	plugins.ieOpacity.enabled = true;
-})(require('../plugins'));
+	}
+};
