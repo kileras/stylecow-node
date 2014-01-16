@@ -94,7 +94,7 @@ var editChannel = function (color, channel, value) {
 				}, 'color');
 			});
 		});
-
-		plugins.color.enabled = true;
 	};
+
+	plugins.color.enabled = true;
 })(require('../plugins'));

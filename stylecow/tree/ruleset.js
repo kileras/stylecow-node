@@ -160,6 +160,27 @@
 				child.executeRecursive(fn, propagateData);
 			});
 		},
+		transform: function (selectorfn, rulefn, childrenfn) {
+			childrenfn.call(this);
+
+			if (this.selector) {
+				selectorfn.call(this.selector);
+			}
+
+			var k = 0;
+
+			while (this.rules[k]) {
+				rulefn.call(this.rules[k]);
+				k++;
+			}
+
+			k = 0;
+
+			while (this.children[k]) {
+				this.children[k].transform(selectorfn, rulefn, childrenfn);
+				k++;
+			}
+		},
 		toString: function (options) {
 			options = utils.clone(options) || {};
 			options.indent = options.indent || 0;

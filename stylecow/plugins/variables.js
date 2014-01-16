@@ -7,7 +7,7 @@
 				if (rule.name.indexOf('var-') === 0) {
 					variables[rule.name.substr(4)] = rule.value;
 
-					rule.parent.removeProperty(rule.index());
+					rule.parent.removeRule(rule.index());
 				}
 			});
 		});

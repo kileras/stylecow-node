@@ -23,7 +23,7 @@ var mergeNestedRules = function (css, pos) {
 
 (function (plugins) {
 	plugins.nestedRules = function (css) {
-		var k = 0, child, childSelectors;
+		var k = 0;
 
 		while (css.children[k]) {
 			if (!css.children[k].selector.type) {
