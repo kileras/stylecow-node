@@ -1,0 +1,24 @@
+{
+	"name": "stylecow",
+	"version": "0.0.1",
+	"description": "Modern CSS for all browsers",
+	"homepage": "http://oscarotero.github.io/stylecow-node",
+	"author": {
+		"name": "Oscar Otero",
+		"email": "oom@oscarotero.com"
+	},
+	"bugs": {
+		"url": "https://github.com/oscarotero/stylecow-node/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/oscarotero/stylecow-node.git"
+	},
+	"licenses": [
+		{
+			"type": "MIT",
+			"url": "https://github.com/oscarotero/stylecow-node/blob/master/LICENSE"
+		}
+	],
+	"main": "./stylecow/index"
+}

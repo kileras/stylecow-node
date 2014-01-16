@@ -84,81 +84,86 @@ var utils = {
 
 		return array;
 	},
-	executeFunctions: function (string, functionName, callback, thisCallback) {
+	getFunctionInfo: function (string) {
+		var matches = string.match(/^([\w-]+)\((.*)\)$/);
+
+		if (matches) {
+			return {
+				string: matches[0],
+				name: matches[1],
+				params: utils.explodeTrim(',', matches[2])
+			};
+		}
+	},
+	executeFunctions: function (string, callback, thisCallback) {
 		string = '' + string;
 
-		if ((string.indexOf('(') === -1) || (functionName && string.indexOf(functionName + '(') === -1)) {
+		if (string.indexOf('(') === -1) {
 			return string;
 		}
 
-		var length = string.length,
-			index = 0,
-			regexp, matches, name;
+		var index = string.length - 1,
+			deep = 0,
+			fns = [],
+			quotes,
+			currChar,
+			currFn,
+			result = '';
 
-		if (functionName) {
-			regexp = new RegExp('(^|[^\w-])(' + functionName + ')$');
-		} else {
-			regexp = /([\w-]+)$/;
-		}
+		while (index >= 0) {
+			currChar = string[index];
+			result = currChar + result;
+			index--;
 
-		while (index < length) {
-			index = string.indexOf('(', index);
-
-			if (index === -1) {
-				break;
+			if (quotes && quotes === currChar) {
+				quotes = undefined;
+			} else if (currChar === '"' || currChar === "'") {
+				quotes = currChar;
 			}
 
-			if (functionName) {
-				matches = string.substr(0, index).match(regexp);
-				
-				if (!matches) {
-					index++;
-					continue;
-				}
-				name = matches[2];
-			} else {
-				matches = string.substr(0, index).match(regexp);
-				name = matches[0];
+			fns.forEach(function (fn) {
+				fn.str = currChar + fn.str;
+			});
+
+			if (!quotes && currChar === ')') {
+				currFn = {
+					str: currChar,
+					name: false
+				};
+
+				fns.unshift(currFn);
+
+				continue;
 			}
 
-			var start = index - name.length;
+			if (currFn) {
+				if (currFn.name && (!/[\w-]/.test(currChar) || index === -1)) {
+					var resultFn = callback.call(thisCallback, utils.getFunctionInfo(index === -1 ? currFn.str : currFn.str.substr(1)));
 
-			for (var end = index, deep = 0; end <= length; end++) {
-				var l = string[end] || '';
+					if (resultFn !== undefined) {
+						if (index !== -1) {
+							resultFn = currChar + resultFn;
+						}
 
-				if (l === '(') {
-					deep++;
-					continue;
-				}
-
-				if (l === ')' && deep) {
-					deep--;
-					
-					if (!deep) {
-						end++;
-						break;
+						result = resultFn + result.substr(currFn.str.length);
 					}
+
+					var length = currFn.str.length;
+					fns.shift();
+					currFn = fns[0];
+
+					fns.forEach(function (fn) {
+						fn.str = resultFn + fn.str.substr(length);
+					});
+				}
+
+				if (!quotes && currChar === '(') {
+					currFn.name = true;
 				}
 			}
-
-			var parameters = string.slice(index + 1, end - 1);
-			var result = callback.call(thisCallback, name, utils.explodeTrim(',', parameters), string.slice(start, end));
-
-			if (result !== undefined) {
-				string = string.slice(0, start) + result.substr(0, end - start) + result.slice(end - start) + string.slice(end);
-				length = string.length;
-
-				if (result.indexOf('(') === -1) {
-					index = start + result.length;
-				} else {
-					index = start + result.indexOf('(');
-				}
-			}
-
-			index++;
 		}
 
-		return string;
+		return result;
 	},
 	clone: function (obj) {
 		if (!obj) {
@@ -186,7 +191,7 @@ var utils = {
 		return obj;
 	},
 	needSupport: function (browsers, featureSupport) {
-		if (featureSupport === false) {
+		if (!featureSupport) {
 			return true;
 		}
 

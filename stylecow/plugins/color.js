@@ -7,7 +7,7 @@ var editTint = function (rgba, tint) {
 	rgba[2] += Math.round(((255 - rgba[2]) * (100 - parseFloat(tint))) / 100);
 
 	return rgba;
-}
+};
 
 var editChannel = function (color, channel, value) {
 	var channels = {
@@ -37,64 +37,58 @@ var editChannel = function (color, channel, value) {
 	color[channel[0]] = value;
 
 	return color;
-}
+};
 
+module.exports = {
+	functions: {
+		color: function (fn, variables) {
+			var rgba = color.mix(fn.params.shift());
 
-(function (plugins) {
-	plugins.color = function (css) {
-		css.executeRecursive(function () {
-			this.rules.forEach(function (rule) {
-				rule.executeFunctions(function (name, parameters) {
-					var rgba = color.mix(parameters.shift());
+			fn.params.forEach(function (operation) {
+				var name, value;
 
-					parameters.forEach(function (operation) {
-						var name, value;
-
-						if (operation.indexOf(':') === -1) {
-							if (/^[\+\-]?[0-9]+$/.test(operation)) {
-								name = 'tint';
-								value = operation;
-							} else if (/^[\+\-]?[0-9\.]+$/.test(operation)) {
-								name = 'alpha';
-								value = operation;
-							} else {
-								return;
-							}
-						} else {
-							var e = utils.explodeTrim(':', operation, 2);
-							name = e[0];
-							value = e[1];
-						}
-
-						switch (name) {
-							case 'hue':
-							case 'saturation':
-							case 'light':
-								rgba = color.HSLA_RGBA(editChannel(color.RGBA_HSLA(rgba), name, value));
-								break;
-							
-							case 'red':
-							case 'green':
-							case 'blue':
-							case 'alpha':
-								rgba = editChannel(rgba, name, value);
-								break;
-							
-							case 'tint':
-								rgba = editTint(rgba, value);
-								break;
-						}
-					});
-
-					if (rgba[3] < 1) {
-						return 'rgba(' + rgba.join(', ') + ')';
+				if (operation.indexOf(':') === -1) {
+					if (/^[\+\-]?[0-9]+$/.test(operation)) {
+						name = 'tint';
+						value = operation;
+					} else if (/^[\+\-]?[0-9\.]+$/.test(operation)) {
+						name = 'alpha';
+						value = operation;
+					} else {
+						return;
 					}
+				} else {
+					var e = utils.explodeTrim(':', operation, 2);
+					name = e[0];
+					value = e[1];
+				}
 
-					return '#' + color.RGBA_HEX(rgba);
-				}, 'color');
+				switch (name) {
+					case 'hue':
+					case 'saturation':
+					case 'light':
+						rgba = color.HSLA_RGBA(editChannel(color.RGBA_HSLA(rgba), name, value));
+						break;
+					
+					case 'red':
+					case 'green':
+					case 'blue':
+					case 'alpha':
+						rgba = editChannel(rgba, name, value);
+						break;
+					
+					case 'tint':
+						rgba = editTint(rgba, value);
+						break;
+				}
 			});
-		});
 
-		plugins.color.enabled = true;
-	};
-})(require('../plugins'));
+			if (rgba[3] < 1) {
+				return 'rgba(' + rgba.join(', ') + ')';
+			}
+
+			return '#' + color.RGBA_HEX(rgba);
+		}
+	},
+	enabled: true
+};

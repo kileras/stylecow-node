@@ -27,46 +27,31 @@ var getRotateFilter = function (value) {
 	}
 };
 
-(function (plugins) {
-	plugins.ieTransform = function (css) {
-		css.executeRecursive(function () {
-			var rule = this.getRules('transform').pop(), that = this;
-
-			if (!rule) {
-				return;
+module.exports = {
+	functions: {
+		rotate: function (fn) {
+			if (this.is('transform')) {
+				this.parent.addMsFilter(getRotateFilter(fn.params[0]));
 			}
-
-			rule.executeFunctions(function (name, params) {
-				switch (name) {
-					case 'rotate':
-						that.addMsFilter(getRotateFilter(params[0]));
-						break;
-
-					case 'scaleX':
-						if (params[0] == -1) {
-							that.addMsFilter('flipH');
-						}
-						return;
-
-					case 'scaleY':
-						if (params[0] == -1) {
-							that.addMsFilter('flipV');
-						}
-						return;
-
-					case 'scale':
-						if (params[0] == -1 && params[1] == -1) {
-							that.addMsFilter('flipH, flipV');
-						}
-						return;
-				}
-			});
-		});
-	};
-
-	plugins.ieTransform.support = {
+		},
+		scaleX: function (fn) {
+			if (this.is('transform') && fn.params[0] == -1) {
+				this.parent.addMsFilter('flipH');
+			}
+		},
+		scaleY: function (fn) {
+			if (this.is('transform') && fn.params[0] == -1) {
+				this.parent.addMsFilter('flipV');
+			}
+		},
+		scale: function (fn) {
+			if (this.is('transform') && fn.params[0] == -1 && fn.params[1] == -1) {
+				this.parent.addMsFilter('flipH, flipV');
+			}
+		}
+	},
+	enabled: true,
+	support: {
 		'explorer': 9.0
-	};
-
-	plugins.ieTransform.enabled = true;
-})(require('../plugins'));
+	}
+};

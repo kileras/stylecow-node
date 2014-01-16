@@ -28,40 +28,37 @@ var remToPixels = function (value, rootPixels) {
 	return (rootPixels * parseFloat(value, 10)) + 'px';
 };
 
-(function (plugins) {
-	plugins.rem = function (css) {
-		var rem = 16;
+module.exports = {
+	init: function (data) {
+		data.rem = 16;
 
-		css.getChildren([':root', 'html']).forEach(function (child) {
-			child.getRules('font-size').forEach(function (rule) {
-				rem = valueToPixels(rule.value);
+		this.getChildren([':root', 'html']).forEach(function (ruleset) {
+			ruleset.getRules('font-size').forEach(function (rule) {
+				data.rem = valueToPixels(rule.value);
 			});
 		});
+	},
 
-		css.executeRecursive(function () {
-			this.getRules().forEach(function (rule) {
-				if (!rule.value || rule.value.indexOf('rem') === -1) {
-					return false;
-				}
+	rule: function (data) {
+		if (!this.value || this.value.indexOf('rem') === -1) {
+			return false;
+		}
 
-				var value = rule.value.replace(/([0-9\.]+)rem/, function (match) {
-					return remToPixels(match, rem);
-				});
-
-				if (rule.value !== value) {
-					this.addRule(new tree.rule(rule.name, value), rule.index());
-				}
-			}, this);
+		var value = this.value.replace(/([0-9\.]+)rem/, function (match) {
+			return remToPixels(match, data.rem);
 		});
-	};
 
-	plugins.rem.support = {
+		if (this.value !== value) {
+			this.parent.addRule(new tree.rule(this.name, value), this.index());
+		}
+	},
+	enabled: true,
+	support: {
 		'firefox': 3.6,
 		'explorer': 9.0,
 		'safari': 5.0,
 		'opera': 11.6,
 		'ios': 4.0
-	};
+	}
+};
 
-	plugins.rem.enabled = true;
-})(require('../plugins'));

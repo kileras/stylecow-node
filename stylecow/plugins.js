@@ -1,5 +1,6 @@
-(function (plugins) {
-	[
+var plugins = {};
+
+[
 	'color',
 	'ffBorderRadius',
 	'ieBackgroundAlpha',
@@ -17,7 +18,8 @@
 	'rem',
 	'variables',
 	'vendorPrefixes'
-	].forEach(function (pluginName) {
-		require('./plugins/' + pluginName);
-	});
-})(require('./plugins'));
+].forEach(function (pluginName) {
+	plugins[pluginName] = require('./plugins/' + pluginName);
+});
+
+module.exports = plugins;

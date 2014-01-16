@@ -50,27 +50,20 @@ var getFilter = function (params) {
 	}
 };
 
-(function (plugins) {
-	plugins.ieLinearGradient = function (css) {
-		css.executeRecursive(function () {
-			var rule = this.getRules(['background', 'background-image']).pop();
+module.exports = {
+	functions: {
+		"linear-gradient": function (fn) {
+			if (this.is(['background', 'background-image'])) {
+				var filter = getFilter(fn.params);
 
-			if (rule) {
-				rule.executeFunctions(function (name, params) {
-					var filter = getFilter(params);
-
-					if (filter) {
-						this.parent.addMsFilter(filter);
-					}
-				}, 'linear-gradient');
+				if (filter) {
+					this.parent.addMsFilter(filter);
+				}
 			}
-		});
-	};
-
-	plugins.ieLinearGradient.support = {
+		}
+	},
+	enabled: true,
+	support: {
 		'explorer': 10.0
-	};
-
-	plugins.ieLinearGradient.enabled = true;
-})(require('../plugins'));
-
+	}
+};

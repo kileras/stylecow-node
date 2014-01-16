@@ -12,6 +12,14 @@
 		return result;
 	};
 
+	var executePlugins = function (plugins, name, thisParam, support) {
+		plugins.forEach(function (plugin) {
+			if (plugin[name]) {
+				plugin[name].call(thisParam, plugin.data, support);
+			}
+		});
+	};
+
 	tree.ruleset = function (selector) {
 		this.parent = null;
 		this.selector = null;
@@ -91,14 +99,14 @@
 
 			return false;
 		},
-		addRule: function (rule, index) {
-			rule.setParent(this);
-
-			if (index === undefined) {
+		addRule: function (rule, index, after) {
+			if (index === undefined || (after && index === this.rules.length)) {
 				this.rules.push(rule);
 			} else {
-				this.rules.splice(index, 0, rule);
+				this.rules.splice(after ? index + 1 : index, 0, rule);
 			}
+
+			rule.setParent(this);
 
 			return rule;
 		},
@@ -151,13 +159,40 @@
 
 			return this;
 		},
-		executeRecursive: function (fn, data) {
-			var propagateData = utils.clone(data);
+		transform: function (plugins, support) {
+			executePlugins(plugins, 'children', this, support);
 
-			fn.call(this, propagateData);
+			if (this.selector) {
+				executePlugins(plugins, 'selector', this.selector, support);
+			} else if (!this.parent) {
+				executePlugins(plugins, 'init', this, support);
+			}
+
+			var k = 0;
+
+			this.getRules().forEach(function (rule) {
+				rule.value = utils.executeFunctions(rule.value, function (fnInfo) {
+					var name = fnInfo.name;
+					var result;
+
+					plugins.forEach(function (plugin) {
+						if (plugin.functions && plugin.functions[name]) {
+							result = plugin.functions[name].call(rule, {
+								string: fnInfo.string,
+								name: fnInfo.name,
+								params: utils.clone(fnInfo.params)
+							}, plugin.data, support);
+						}
+					});
+
+					return result;
+				});
+
+				executePlugins(plugins, 'rule', rule, support);
+			});
 
 			this.getChildren().forEach(function (child) {
-				child.executeRecursive(fn, propagateData);
+				child.transform(plugins, support);
 			});
 		},
 		toString: function (options) {
