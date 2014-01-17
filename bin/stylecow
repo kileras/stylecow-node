@@ -1,0 +1,50 @@
+var stylecow = require('../lib'),
+	fs = require('fs'),
+	args = process.argv.slice(2);
+
+var file = (args[0] && args[0][0] !== '-') ? args.shift() : '';
+
+args.forEach(function (arg) {
+	var match = arg.match(/^--?([a-z][0-9a-z-]*)(?:=(.*))?$/i);
+
+	if (!match) {
+		console.log('Unrecognised argument: ' + arg);
+		process.exit(1);
+	}
+
+	var name = match[1], value = match[2];
+
+	switch (name) {
+		case 'explorer':
+		case 'firefox':
+		case 'chrome':
+		case 'safari':
+		case 'opera':
+		case 'android':
+		case 'ios':
+			stylecow.support[name] = parseFloat(value);
+			break;
+
+		case 'enable':
+		case 'disable':
+			value.split(',').forEach(function (val) {
+				if (!stylecow.plugins[val]) {
+					console.log('The plugin "' + val + '" is missing');
+					process.exit(1);
+				}
+				
+				stylecow.plugins[val].enabled = (name === 'enable');
+			});
+			break;
+
+		default:
+			console.log('Unrecognised argument: ' + arg);
+			process.exit(1);
+	}
+});
+
+var code = fs.readFileSync(file, 'utf8');
+
+code = stylecow.parseCode(code).transform().toString();
+
+process.stdout.write(code + '\n');
