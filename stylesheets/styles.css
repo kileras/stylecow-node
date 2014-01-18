@@ -91,6 +91,15 @@ body {
   padding: 0 20px;
 }
 
+.fork {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+img {
+  max-width: 100%;
+}
+
 
 article.main > header {
   margin-top: 40px;
@@ -166,7 +175,7 @@ article table tr th, article table tr td {
   border-top: solid 4px #444;
 }
 article table tr th {
-  width: 200px;
+  width: 190px;
   text-align: left;
   font-weight: normal;
 }
