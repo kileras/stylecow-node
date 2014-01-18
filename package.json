@@ -9,9 +9,9 @@
 		"type": "git",
 		"url": "https://github.com/oscarotero/stylecow-node.git"
 	},
-	"main": "./stylecow/index",
+	"main": "./lib/index",
 	"bin": {
-		"stylecow": "./stylecow/index"
+		"stylecow": "./bin/stylecow"
 	},
 	"license": "MIT"
 }
