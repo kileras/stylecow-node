@@ -1,8 +1,19 @@
 var stylecow = require('../lib'),
 	fs = require('fs'),
+	info = require('../lib/info'),
 	args = process.argv.slice(2);
 
-var file = (args[0] && args[0][0] !== '-') ? args.shift() : '';
+if (!args.length) {
+	info.print();
+	process.exit(0);
+}
+
+var file = (args[0] && args[0][0] !== '-') ? args.shift() : null;
+
+if (!file) {
+	console.log('Filename is required: stylecow <filename> (--options)');
+	process.exit(1);
+}
 
 args.forEach(function (arg) {
 	var match = arg.match(/^--?([a-z][0-9a-z-]*)(?:=(.*))?$/i);
