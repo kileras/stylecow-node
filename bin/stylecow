@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 var stylecow = require('../lib'),
 	fs = require('fs'),
 	info = require('../lib/info'),
