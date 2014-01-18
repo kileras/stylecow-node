@@ -1,4 +1,4 @@
-var styleCow = require('./stylecow');
+var styleCow = require('stylecow');
 
 var css = styleCow.loadFile('./test.css').transform().toString();
 

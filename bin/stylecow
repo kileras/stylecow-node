@@ -43,8 +43,8 @@ args.forEach(function (arg) {
 	}
 });
 
-var code = fs.readFileSync(file, 'utf8');
+var css = stylecow.load(fs.readFileSync(file, 'utf8'));
 
-code = stylecow.parseCode(code).transform().toString();
+css.transform();
 
-process.stdout.write(code + '\n');
+process.stdout.write(css.toString() + '\n');
