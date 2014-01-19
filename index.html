@@ -8,6 +8,8 @@
         <link rel="stylesheet" href="stylesheets/normalize.css">
         <link rel="stylesheet" href="stylesheets/styles.css">
 
+        <script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+
         <meta name="viewport" content="width=device-width, initial-scale=1">
     </head>
 
@@ -28,10 +30,6 @@
                     <small>Project maintained by <a href="https://github.com/oscarotero">oscarotero</a> | <a href="https://github.com/oscarotero/stylecow-node/blob/master/LICENSE">MIT license</a></small>
                 </p>
             </header>
-
-            <a href="#why">
-                <img src="images/vaca_rubia_galega.jpg" alt="The real style cow">
-            </a>
 
             <h2 id="why">Why another CSS preprocessor?</h2>
 
@@ -73,24 +71,23 @@
 
             <pre><code>$ stylecow styles.css --firefox=3.0 --explorer=6.0</code></pre>
 
-            <p>Some plugins are disabled by default because they are not "safe" plugins and can change some non desired aspects of the design. For example, ieLinearGradient plugin emulates the background gradient in explorer using the filter property, but sometimes it's better to use a plain colors because the abuse of filters in explorer affects to render performance. You can enable/disable plugins with the --enable and --disable options:</p>
+            <p>Some plugins are disabled by default because they are not "safe" plugins and can change some non desired aspects of the design. For example, ieLinearGradient plugin emulates the background gradient in explorer using the filter property, but sometimes it's better to use plain colors because the abuse of filters in explorer affects to performance. You can enable/disable plugins with the --enable and --disable options:</p>
 
             <pre><code>$ stylecow styles.css --enable=ieLinearGradient --disable=ieTransform,ieBackgroundAlpha</code></pre>
 
-            <h2>Plugins</h2>
+            <h2>Plugins to play with new css features</h2>
 
-            <p>The complete list of plugins:</p>
+            <ul class="plugin-list">
+                <li id="plugin-color">
+                    <div class="plugin-header">
+                        <h3>
+                            <a href="#plugin-color">color</a>
+                            <span>Enabled by default</span>
+                        </h3>
+                    </div>
 
-            <table>
-                <tbody>
-                    <tr id="plugin-color">
-                        <th>
-                            <h3><a href="#plugin-color">color</a></h3>
-                            <p>Enabled by default</p>
-                        </th>
-
-                        <td>
-                            <p>Support for color() function. Manipulate color dinamically. Changes some values in absolute or relative way. This function may change in a future due to the possible implementation a color() function in <a href="http://www.xanthir.com/blog/b4Jp0">CSS4 color module.</a></p>
+                    <div class="plugin-details">
+                        <p>Support for color() function. Manipulate color dinamically. Changes some values in absolute or relative way. This function may change in a future due to the possible implementation a color() function in <a href="http://www.xanthir.com/blog/b4Jp0">CSS4 color module.</a></p>
 
 <pre><code>color(&lt;color&gt; [, alpha|tint|hue|saturation|light|red|green|blue])</code></pre>
 <pre><code>Mix various colors:
@@ -108,252 +105,19 @@ Example:
     background: color(rgb(34, 56, 78), tint:50);
 }
 </code></pre>
-                        </td>
-                    </tr>
+                    </div>
+                </li>
 
-                    <tr id="plugin-ffBorderRadius">
-                        <th>
-                            <h3><a href="#plugin-ffBorderRadius">ffBorderRadius</a></h3>
-                            <p>Enabled by default and applied for firefox&lt;13</p>
-                        </th>
-                        <td>
-                            <p>Add the old border-[*]-radius syntax for firefox.</p>
-                            <p>You write:</p>
-<pre><code>.foo {
-    border-top-left-radius: 10px;
-}
-</code></pre>
-                            <p>And stylecow converts to:</p>
-<pre><code>.foo {
-    -moz-border-radius-topleft: 10px;
-    border-top-left-radius: 10px;
-}
-</code></pre>
-                        </td>
-                    </tr>
+                <li id="plugin-matches">
+                    <div class="plugin-header">
+                        <h3>
+                            <a href="#plugin-matches">matches</a>
+                            <span>Enabled by default</span>
+                        </h3>
+                    </div>
 
-                    <tr id="plugin-ieBackgroundAlpha">
-                        <th>
-                            <h3><a href="#plugin-ieBackgroundAlpha">ieBackgroundAlpha</a></h3>
-                            <p>Disabled by default and applied for explorer&lt;9</p>
-                        </th>
-                        <td>
-                            <p>Add support of rgba/hsla colors in backgrounds for explorer using ms filters <a href="http://css-tricks.com/rgba-browser-support/">more info</a></p>
-                            <p>You write:</p>
-<pre><code>.foo {
-    background: rgba(0, 0, 0, 0.5);
-}
-</code></pre>
-                            <p>And stylecow converts to:</p>
-<pre><code>.foo {
-    background: rgba(0, 0, 0, 0.5);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#80000000', endColorStr='#80000000');
-}
-</code></pre>
-                        </td>
-                    </tr>
-
-                    <tr id="plugin-ieClip">
-                        <th>
-                            <h3><a href="#plugin-ieClip">ieClip</a></h3>
-                            <p>Enabled by default and applied for explorer&lt;8</p>
-                        </th>
-                        <td>
-                            <p>Fix the old syntax of clip for ie 6 and 7</p>
-                            <p>You write:</p>
-<pre><code>.foo {
-    clip: rect(5px, 40px, 45px, 5px);
-}
-</code></pre>
-                            <p>And stylecow converts to:</p>
-<pre><code>.foo {
-    clip: rect(5px, 40px, 45px, 5px);
-    *clip: rect(5px 40px 45px 5px);
-}
-</code></pre>
-                        </td>
-                    </tr>
-
-                    <tr id="plugin-ieFloat">
-                        <th>
-                            <h3><a href="#plugin-ieFloat">ieFloat</a></h3>
-                            <p>Enabled by default and applied for explorer&lt;7</p>
-                        </th>
-                        <td>
-                            <p>Fix the double margin bug in ie6 on float block elements</p>
-                            <p>You write:</p>
-<pre><code>.foo {
-    float: left;
-}
-</code></pre>
-                            <p>And stylecow converts to:</p>
-<pre><code>.foo {
-    float: left;
-    _display: inline;
-}
-</code></pre>
-                        </td>
-                    </tr>
-
-                    <tr id="plugin-ieInlineBlock">
-                        <th>
-                            <h3><a href="#plugin-ieInlineBlock">ieInlineBlock</a></h3>
-                            <p>Enabled by default and applied for explorer&lt;8</p>
-                        </th>
-                        <td>
-                            <p>Add support for display:inline-block in explorer 6 and 7</p>
-                            <p>You write:</p>
-<pre><code>.foo {
-    display: inline-block;
-}
-</code></pre>
-                            <p>And stylecow converts to:</p>
-<pre><code>.foo {
-    display: inline-block;
-    *zoom: 1;
-    *display: inline;
-}
-</code></pre>
-                        </td>
-                    </tr>
-
-                    <tr id="plugin-ieLinearGradient">
-                        <th>
-                            <h3><a href="#plugin-ieLinearGradient">ieLinearGradient</a></h3>
-                            <p>Disabled by default and applied for explorer&lt;10</p>
-                        </th>
-                        <td>
-                            <p>Emulate the linear-gradient background in explorer using ms filters</p>
-                            <p>You write:</p>
-<pre><code>.foo {
-    background: linear-gradient(top, red, blue);
-}
-</code></pre>
-                            <p>And stylecow converts to:</p>
-<pre><code>.foo {
-    background: linear-gradient(top, red, blue);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#FF0000', endColorStr='#0000FF');
-}
-</code></pre>
-                        </td>
-                    </tr>
-
-                    <tr id="plugin-ieMinHeight">
-                        <th>
-                            <h3><a href="#plugin-ieMinHeight">ieMinHeight</a></h3>
-                            <p>Enabled by default and applied for explorer&lt;7</p>
-                        </th>
-                        <td>
-                            <p>Add support for min-height property to ie 6, <a href="http://www.ilovemyjournal.com/?action=view_entry&amp;eid=4779">more info</a></p>
-                            <p>You write:</p>
-<pre><code>.foo {
-    min-height: 200px;
-}
-</code></pre>
-                            <p>And stylecow converts to:</p>
-<pre><code>.foo {
-    min-height: 200px;
-    _height: 200px;
-}
-</code></pre>
-                        </td>
-                    </tr>
-
-                    <tr id="plugin-ieOpacity">
-                        <th>
-                            <h3><a href="#plugin-ieOpacity">ieOpacity</a></h3>
-                            <p>Enabled by default and applied for explorer&lt;9</p>
-                        </th>
-                        <td>
-                            <p>Add opacity support for explorer using filters</p>
-                            <p>You write:</p>
-<pre><code>.foo {
-    opacity: 0.5;
-}
-</code></pre>
-                            <p>And stylecow converts to:</p>
-<pre><code>.foo {
-    opacity: 0.5;
-    filter: alpha(opacity=50);
-}
-</code></pre>
-                        </td>
-                    </tr>
-
-                    <tr id="plugin-ieTransform">
-                        <th>
-                            <h3><a href="#plugin-ieTransform">ieTransform</a></h3>
-                            <p>Enabled by default and applied for explorer&lt;9</p>
-                        </th>
-                        <td>
-                            <p>Add ms filters to emulate some 2d css transformations: rotate(), scale(-1, -1), scalex(-1) and scaley(-1)</p>
-                            <p>You write:</p>
-<pre><code>.foo {
-    transform: rotate(45deg);
-}
-</code></pre>
-                            <p>And stylecow converts to:</p>
-<pre><code>.foo {
-    transform: rotate(45deg);
-    filter: progid:DXImageTransform.Microsoft.Matrix(sizingMethod="auto expand", M11 = 0.70710678118655, M12 = -0.70710678118655, M21 = 0.70710678118655, M22 = 0.70710678118655);
-}
-</code></pre>
-                        </td>
-                    </tr>
-
-                    <tr id="plugin-initial">
-                        <th>
-                            <h3><a href="#plugin-initial">initial</a></h3>
-                            <p>Enabled by default and applied for firefox&lt;19, chrome&lt;1, safari&lt;1.2 and opera&lt;15</p>
-                        </th>
-                        <td>
-                            <p>Add support for the "initial" value</p>
-                            <p>You write:</p>
-<pre><code>.foo {
-    background-position: initial;
-    height: initial;
-}
-</code></pre>
-                            <p>And stylecow converts to:</p>
-<pre><code>.foo {
-    background-position: 0 0;
-    height: auto;
-}
-</code></pre>
-                        </td>
-                    </tr>
-
-                    <tr id="plugin-linearGradient">
-                        <th>
-                            <h3><a href="#plugin-linearGradient">linearGradient</a></h3>
-                            <p>Enabled by default and applied for explorer&lt;10, chrome&lt;26, safari&lt;6.1, opera&lt;12.1, ios&lt;7.0 and android&lt;4.4</p>
-                        </th>
-                        <td>
-                            <p>Fallback for browsers supporting the olders syntax of linear-gradient and -webkit-gradient</p>
-                            <p>You write:</p>
-<pre><code>.foo {
-    background: linear-gradient(to bottom, red, blue);
-}
-</code></pre>
-                            <p>And stylecow converts to:</p>
-<pre><code>.foo {
-    background: -webkit-gradient(linear, left top, left bottom, from(red), to(blue));
-    background: -o-linear-gradient(top, red, blue);
-    background: -webkit-linear-gradient(top, red, blue);
-    background: -moz-linear-gradient(top, red, blue);
-    background: linear-gradient(to bottom, red, blue);
-}
-</code></pre>
-                        </td>
-                    </tr>
-
-                    <tr id="plugin-matches">
-                        <th>
-                            <h3><a href="#plugin-matches">matches</a></h3>
-                            <p>Enabled by default</p>
-                        </th>
-                        <td>
-                            <p>Add support for CSS4 :matches() selector in all browsers, <a href="http://www.w3.org/TR/2011/WD-selectors4-20110929/#matches">more info</a></p>
+                    <div class="plugin-details">
+                        <p>Add support for CSS4 :matches() selector in all browsers, <a href="http://www.w3.org/TR/2011/WD-selectors4-20110929/#matches">more info</a></p>
                             <p>You write:</p>
 <pre><code>.foo :matches(h1, h2, h3, h4, h5, h6) a {
     color: blue;
@@ -370,16 +134,19 @@ Example:
     color: black;
 }
 </code></pre>
-                        </td>
-                    </tr>
+                    </div>
+                </li>
 
-                    <tr id="plugin-nestedRules">
-                        <th>
-                            <h3><a href="#plugin-nestedRules">nestedRules</a></h3>
-                            <p>Enabled by default</p>
-                        </th>
-                        <td>
-                            <p>Add support for nested rules, <a href="http://lists.w3.org/Archives/Public/www-style/2011Jun/0022.html">more info</a></p>
+                <li id="plugin-nestedRules">
+                    <div class="plugin-header">
+                        <h3>
+                            <a href="#plugin-nestedRules">nestedRules</a>
+                            <span>Enabled by default</span>
+                        </h3>
+                    </div>
+
+                    <div class="plugin-details">
+                        <p>Add support for nested rules, <a href="http://lists.w3.org/Archives/Public/www-style/2011Jun/0022.html">more info</a></p>
                             <p>You write:</p>
 <pre><code>.foo {
     color: blue;
@@ -404,54 +171,19 @@ Example:
     color: green;
 }
 </code></pre>
-                        </td>
-                    </tr>
+                    </div>
+                </li>
 
-                    <tr id="plugin-rem">
-                        <th>
-                            <h3><a href="#plugin-rem">rem</a></h3>
-                            <p>Enabled by default and applied for firefox&lt;3.6, explorer&lt;9.0, safari&lt;5.0, opera&lt;11.6 and ios&lt;4.0</p>
-                        </th>
-                        <td>
-                            <p>Add a fallback in pixels for browsers not supporting rem values</p>
-                            <p>You write:</p>
-<pre><code>.foo {
-    font-size: 2rem;
-}
-</code></pre>
-                            <p>And stylecow converts to:</p>
-<pre><code>.foo {
-    font-size: 32px;
-    font-size: 2rem;
-}
-</code></pre>
-                            <p>You can change the default value of 1rem (16px) defining a new font-size in :root or html. For example, you write:</p>
-<pre><code>html {
-    font-size: 1.2em;
-}
-.foo {
-    font-size: 1rem;
-}
-</code></pre>
-                            <p>And stylecow converts to:</p>
-<pre><code>html {
-    font-size: 1.2em;
-}
-.foo {
-    font-size: 19.2px;
-    font-size: 1rem;
-}
-</code></pre>
-                        </td>
-                    </tr>
+                <li id="plugin-variables">
+                    <div class="plugin-header">
+                        <h3>
+                            <a href="#plugin-variables">variables</a>
+                            <span>Enabled by default</span>
+                        </h3>
+                    </div>
 
-                    <tr id="plugin-variables">
-                        <th>
-                            <h3><a href="#plugin-variables">variables</a></h3>
-                            <p>Enabled by default</p>
-                        </th>
-                        <td>
-                            <p>Add variables using standard var() function, <a href="http://dev.w3.org/csswg/css-variables/">more info</a>. For global variables (available in all properties), you have to define them in the selectors :root or html. Use nested rules to create scoped variables.</p>
+                    <div class="plugin-details">
+                        <p>Add variables using standard var() function, <a href="http://dev.w3.org/csswg/css-variables/">more info</a>. For global variables (available in all properties), you have to define them in the selectors :root or html. Use nested rules to create scoped variables.</p>
 
                             <pre><code>var(varname [, default])</code></pre>
 
@@ -481,16 +213,23 @@ Example:
     font-size: 24px;
 }
 </code></pre>
-                        </td>
-                    </tr>
+                    </div>
+                </li>
+            </ul>
 
-                    <tr id="plugin-vendorPrefixes">
-                        <th>
-                            <h3><a href="#plugin-vendorPrefixes">vendorPrefixes</a></h3>
-                            <p>Enabled by default</p>
-                        </th>
-                        <td>
-                            <p>Add automatically the vendor prefixes for common browsers. Uses the support configuration to detect whether the vendor prefix is needed or not in each case.</p>
+            <h2>Plugins to fix/normalize css implementations</h2>
+
+            <ul class="plugin-list">
+                <li id="plugin-vendorPrefixes">
+                    <div class="plugin-header">
+                        <h3>
+                            <a href="#plugin-vendorPrefixes">vendorPrefixes</a>
+                            <span>Enabled by default</span>
+                        </h3>
+                    </div>
+
+                    <div class="plugin-details">
+                        <p>Add automatically the vendor prefixes for common browsers. Uses the support configuration to detect whether the vendor prefix is needed or not in each case.</p>
 
                             <p>You write:</p>
 <pre><code>.foo {
@@ -520,10 +259,391 @@ Example:
     background: red;
 }
 </code></pre>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                    </div>
+                </li>
+
+                <li id="plugin-linearGradient">
+                    <div class="plugin-header">
+                        <h3>
+                            <a href="#plugin-linearGradient">linearGradient</a>
+                            <span>Enabled by default</span>
+                        </h3>
+                        <p><strong>explorer &lt; 10</strong> <strong>chrome &lt; 26</strong><strong>safari &lt; 6.1</strong> <strong>opera &lt; 12.1</strong> <strong>ios &lt; 7.0</strong> <strong>android &lt; 4.4</strong></p>
+                    </div>
+
+                    <div class="plugin-details">
+                        <p>Fallback for browsers supporting the olders syntax of linear-gradient and -webkit-gradient</p>
+                            <p>You write:</p>
+<pre><code>.foo {
+    background: linear-gradient(to bottom, red, blue);
+}
+</code></pre>
+                            <p>And stylecow converts to:</p>
+<pre><code>.foo {
+    background: -webkit-gradient(linear, left top, left bottom, from(red), to(blue));
+    background: -o-linear-gradient(top, red, blue);
+    background: -webkit-linear-gradient(top, red, blue);
+    background: -moz-linear-gradient(top, red, blue);
+    background: linear-gradient(to bottom, red, blue);
+}
+</code></pre>
+                    </div>
+                </li>
+
+                <li id="plugin-calc">
+                    <div class="plugin-header">
+                        <h3>
+                            <a href="#plugin-calc">calc</a>
+                            <span>Enabled by default</span>
+                        </h3>
+                    </div>
+
+                    <div class="plugin-details">
+                        <p>Normalizes the calc() function that requires spaces around binary "+" and "-" operators. Internet explorer (in accordance with the spec) does not accept calculations without spaces. <a href="http://www.w3.org/TR/css3-values/#calc">More info</a></p>
+                        <p>You write:</p>
+<pre><code>.foo {
+    width: calc(100%-30px);
+}
+</code></pre>
+                            <p>And stylecow converts to:</p>
+<pre><code>.foo {
+    width: calc(100% - 30px);
+}
+</code></pre>
+                    </div>
+                </li>
+
+                <li id="plugin-ffBorderRadius">
+                    <div class="plugin-header">
+                        <h3>
+                            <a href="#plugin-ffBorderRadius">ffBorderRadius</a>
+                            <span>Enabled by default</span>
+                        </h3>
+                        <p><strong>firefox &lt; 13</strong></p>
+                    </div>
+
+                    <div class="plugin-details">
+                        <p>Add the old border-[*]-radius syntax for firefox.</p>
+                        <p>You write:</p>
+<pre><code>.foo {
+    border-top-left-radius: 10px;
+}
+</code></pre>
+                            <p>And stylecow converts to:</p>
+<pre><code>.foo {
+    -moz-border-radius-topleft: 10px;
+    border-top-left-radius: 10px;
+}
+</code></pre>
+                    </div>
+                </li>
+
+                <li id="plugin-ieClip">
+                    <div class="plugin-header">
+                        <h3>
+                            <a href="#plugin-ieClip">ieClip</a>
+                            <span>Enabled by default</span>
+                        </h3>
+                        <p><strong>explorer &lt; 8</strong></p>
+                    </div>
+
+                    <div class="plugin-details">
+                        <p>Fix the old syntax of clip for ie 6 and 7</p>
+                        <p>You write:</p>
+<pre><code>.foo {
+    clip: rect(5px, 40px, 45px, 5px);
+}
+</code></pre>
+                            <p>And stylecow converts to:</p>
+<pre><code>.foo {
+    clip: rect(5px, 40px, 45px, 5px);
+    *clip: rect(5px 40px 45px 5px);
+}
+</code></pre>
+                    </div>
+                </li>
+
+                <li id="plugin-ieFloat">
+                    <div class="plugin-header">
+                        <h3>
+                            <a href="#plugin-ieFloat">ieFloat</a>
+                            <span>Enabled by default</span>
+                        </h3>
+                        <p><strong>explorer &lt; 7</strong></p>
+                    </div>
+
+                    <div class="plugin-details">
+                        <p>Fix the double margin bug in ie6 on float block elements</p>
+                        <p>You write:</p>
+<pre><code>.foo {
+    float: left;
+}
+</code></pre>
+                            <p>And stylecow converts to:</p>
+<pre><code>.foo {
+    float: left;
+    _display: inline;
+}
+</code></pre>
+                    </div>
+                </li>
+            </ul>
+
+            <h2>Plugins to emulate css properties in old browsers</h2>
+
+            <ul class="plugin-list">
+                <li id="plugin-ieBackgroundAlpha">
+                    <div class="plugin-header">
+                        <h3>
+                            <a href="#plugin-ieBackgroundAlpha">ieBackgroundAlpha</a>
+                            <span>Disabled by default</span>
+                        </h3>
+                        <p><strong>explorer &lt; 9</strong></p>
+                    </div>
+
+                    <div class="plugin-details">
+                        <p>Add support of rgba/hsla colors in backgrounds for explorer using ms filters <a href="http://css-tricks.com/rgba-browser-support/">more info</a>. This plugin is disabled by default because it's not "safe", and the use of filters affects to performance. You can enable it with the parameter <code>--enable=ieBackgroundAlpha</code></p>
+                            <p>You write:</p>
+<pre><code>.foo {
+    background: rgba(0, 0, 0, 0.5);
+}
+</code></pre>
+                            <p>And stylecow converts to:</p>
+<pre><code>.foo {
+    background: rgba(0, 0, 0, 0.5);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#80000000', endColorStr='#80000000');
+}
+</code></pre>
+                    </div>
+                </li>
+
+                
+
+                <li id="plugin-ieInlineBlock">
+                    <div class="plugin-header">
+                        <h3>
+                            <a href="#plugin-ieInlineBlock">ieInlineBlock</a>
+                            <span>Enabled by default</span>
+                        </h3>
+                        <p><strong>explorer &lt; 8</strong></p>
+                    </div>
+
+                    <div class="plugin-details">
+                        <p>Add support for display:inline-block in explorer 6 and 7</p>
+                        <p>You write:</p>
+<pre><code>.foo {
+    display: inline-block;
+}
+</code></pre>
+                            <p>And stylecow converts to:</p>
+<pre><code>.foo {
+    display: inline-block;
+    *zoom: 1;
+    *display: inline;
+}
+</code></pre>
+                    </div>
+                </li>
+
+                <li id="plugin-ieLinearGradient">
+                    <div class="plugin-header">
+                        <h3>
+                            <a href="#plugin-ieLinearGradient">ieLinearGradient</a>
+                            <span>Disabled by default</span>
+                        </h3>
+                        <p><strong>explorer &lt; 10</strong></p>
+                    </div>
+
+                    <div class="plugin-details">
+                        <p>Emulate the linear-gradient background in explorer using ms filters. This plugin is disabled by default because it's not "safe", and the use of filters affects to performance. You can enable it with the parameter <code>--enable=ieBackgroundAlpha</code></p>
+                        <p>You write:</p>
+<pre><code>.foo {
+    background: linear-gradient(top, red, blue);
+}
+</code></pre>
+                            <p>And stylecow converts to:</p>
+<pre><code>.foo {
+    background: linear-gradient(top, red, blue);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#FF0000', endColorStr='#0000FF');
+}
+</code></pre>
+                    </div>
+                </li>
+
+                <li id="plugin-ieMinHeight">
+                    <div class="plugin-header">
+                        <h3>
+                            <a href="#plugin-ieMinHeight">ieMinHeight</a>
+                            <span>Enabled by default</span>
+                        </h3>
+                        <p><strong>explorer &lt; 7</strong></p>
+                    </div>
+
+                    <div class="plugin-details">
+                        <p>Add support for min-height property to ie 6, <a href="http://www.ilovemyjournal.com/?action=view_entry&amp;eid=4779">more info</a></p>
+                            <p>You write:</p>
+<pre><code>.foo {
+    min-height: 200px;
+}
+</code></pre>
+                            <p>And stylecow converts to:</p>
+<pre><code>.foo {
+    min-height: 200px;
+    _height: 200px;
+}
+</code></pre>
+                    </div>
+                </li>
+
+                <li id="plugin-ieOpacity">
+                    <div class="plugin-header">
+                        <h3>
+                            <a href="#plugin-ieOpacity">ieOpacity</a>
+                            <span>Enabled by default</span>
+                        </h3>
+                        <p><strong>explorer &lt; 9</strong></p>
+                    </div>
+
+                    <div class="plugin-details">
+                        <p>Add opacity support for explorer using filters</p>
+                            <p>You write:</p>
+<pre><code>.foo {
+    opacity: 0.5;
+}
+</code></pre>
+                            <p>And stylecow converts to:</p>
+<pre><code>.foo {
+    opacity: 0.5;
+    filter: alpha(opacity=50);
+}
+</code></pre>
+                    </div>
+                </li>
+
+                <li id="plugin-ieTransform">
+                    <div class="plugin-header">
+                        <h3>
+                            <a href="#plugin-ieTransform">ieTransform</a>
+                            <span>Disabled by default</span>
+                        </h3>
+                        <p><strong>explorer &lt; 9</strong></p>
+                    </div>
+
+                    <div class="plugin-details">
+                        <p>Add ms filters to emulate some 2d css transformations: rotate(), scale(-1, -1), scalex(-1) and scaley(-1). This plugin is disabled by default because it's not "safe", and the use of filters affects to performance. You can enable it with the parameter <code>--enable=ieBackgroundAlpha</code></p>
+                            <p>You write:</p>
+<pre><code>.foo {
+    transform: rotate(45deg);
+}
+</code></pre>
+                            <p>And stylecow converts to:</p>
+<pre><code>.foo {
+    transform: rotate(45deg);
+    filter: progid:DXImageTransform.Microsoft.Matrix(sizingMethod="auto expand", M11 = 0.70710678118655, M12 = -0.70710678118655, M21 = 0.70710678118655, M22 = 0.70710678118655);
+}
+</code></pre>
+                    </div>
+                </li>
+
+                <li id="plugin-initial">
+                    <div class="plugin-header">
+                        <h3>
+                            <a href="#plugin-initial">initial</a>
+                            <span>Enabled by default</span>
+                        </h3>
+                        <p><strong>firefox &lt; 19</strong> <strong>chrome &lt; 1</strong><strong>safari &lt; 1.2</strong> <strong>opera &lt; 15</strong></p>
+                    </div>
+
+                    <div class="plugin-details">
+                        <p>Add support for the "initial" value</p>
+                            <p>You write:</p>
+<pre><code>.foo {
+    background-position: initial;
+    height: initial;
+}
+</code></pre>
+                            <p>And stylecow converts to:</p>
+<pre><code>.foo {
+    background-position: 0 0;
+    height: auto;
+}
+</code></pre>
+                    </div>
+                </li>
+
+                
+
+                <li id="plugin-rem">
+                    <div class="plugin-header">
+                        <h3>
+                            <a href="#plugin-rem">rem</a>
+                            <span>Enabled by default</span>
+                        </h3>
+                        <p><strong>explorer &lt; 9</strong> <strong>firefox &lt; 3.6</strong><strong>safari &lt; 5.0</strong> <strong>opera &lt; 11.6</strong> <strong>ios &lt; 4.0</strong></p>
+                    </div>
+
+                    <div class="plugin-details">
+                        <p>Add a fallback in pixels for browsers not supporting rem values</p>
+                            <p>You write:</p>
+<pre><code>.foo {
+    font-size: 2rem;
+}
+</code></pre>
+                            <p>And stylecow converts to:</p>
+<pre><code>.foo {
+    font-size: 32px;
+    font-size: 2rem;
+}
+</code></pre>
+                            <p>You can change the default value of 1rem (16px) defining a new font-size in :root or html. For example, you write:</p>
+<pre><code>html {
+    font-size: 1.2em;
+}
+.foo {
+    font-size: 1rem;
+}
+</code></pre>
+                            <p>And stylecow converts to:</p>
+<pre><code>html {
+    font-size: 1.2em;
+}
+.foo {
+    font-size: 19.2px;
+    font-size: 1rem;
+}
+</code></pre>
+                    </div>
+                </li>
+
+                
+            </ul>
+
+            <img src="images/vaca_rubia_galega.jpg" alt="The real style cow">
         </article>
+
+        <script type="text/javascript">
+            $('.plugin-details').hide();
+
+            var hash = document.location.hash;
+
+            if (hash) {
+                $(hash).find('.plugin-details').show();
+            }
+
+            $('.plugin-header h3 a').click(function (e) {
+                e.preventDefault();
+                
+                var $this = $(this);
+
+                $this.parent().parent().next('.plugin-details').slideToggle('normal', function () {
+                    if ($(this).is(':visible')) {
+                        history.replaceState(null, null, $this.attr('href'));
+                    } else {
+                        history.replaceState(null, null, document.location.pathname);
+                    }
+                });
+                
+            });
+        </script>
     </body>
 </html>
