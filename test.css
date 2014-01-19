@@ -2,6 +2,22 @@
 	var-color: color(#333 blue);
 }
 html {
+	color: color(#333 blue);
+	border-top-left-radius: 10px;
+	background: rgba(10,20,30,0.5);
+	clip: rect(10,20,30,40);
+	float: left;
+	width: calc(3+2);
+
+	strong :matches(.ola, .adios) {
+		display: inline-block;
+		background: linear-gradient(to bottom, red, blue);
+		min-height: 30px;
+		opacity: 0.4;
+	}
+}
+/*
+html {
 	var-mola: color(var(color) gray);
     font-size: 16rem;
     opacity: 0.9;
@@ -536,3 +552,4 @@ section.bookmarklet {
 @import "styles-walls.css";
 @import "styles-items.css";
 @import "styles-activity.css";
+*/

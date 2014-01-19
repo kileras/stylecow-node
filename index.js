@@ -1,5 +1,8 @@
-var styleCow = require('stylecow');
+var stylecow = require('./lib');
+var fs = require('fs');
 
-var css = styleCow.loadFile('./test.css').transform().toString();
+var css = stylecow.load(fs.readFileSync('test.css', 'utf8'), true);
 
-console.log(css);
+css.transform();
+
+process.stdout.write(css.toString() + '\n');
