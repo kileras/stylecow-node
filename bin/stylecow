@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 var stylecow = require('../lib'),
-	fs = require('fs'),
 	info = require('../lib/info'),
 	args = process.argv.slice(2);
 
@@ -56,7 +55,7 @@ args.forEach(function (arg) {
 	}
 });
 
-var css = stylecow.load(fs.readFileSync(file, 'utf8'));
+var css = stylecow.loadFile(file);
 
 css.transform();
 
