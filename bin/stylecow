@@ -19,41 +19,9 @@ if (!file) {
 var css = stylecow.loadFile(file);
 
 args.forEach(function (arg) {
-	var match = arg.match(/^--?([a-z][0-9a-z-]*)(?:=(.*))?$/i);
-
-	if (!match) {
+	if (!css.setSetting(arg)) {
 		console.log('Unrecognised argument: ' + arg);
 		process.exit(1);
-	}
-
-	var name = match[1], value = match[2];
-
-	switch (name) {
-		case 'explorer':
-		case 'firefox':
-		case 'chrome':
-		case 'safari':
-		case 'opera':
-		case 'android':
-		case 'ios':
-			css.settings.support[name] = parseFloat(value);
-			break;
-
-		case 'enable':
-		case 'disable':
-			value.split(',').forEach(function (val) {
-				if (!css.settings.plugins[val]) {
-					console.log('The plugin "' + val + '" is missing');
-					process.exit(1);
-				}
-
-				css.settings.plugins[val].enabled = (name === 'enable');
-			});
-			break;
-
-		default:
-			console.log('Unrecognised argument: ' + arg);
-			process.exit(1);
 	}
 });
 
