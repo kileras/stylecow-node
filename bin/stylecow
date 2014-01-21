@@ -16,6 +16,8 @@ if (!file) {
 	process.exit(1);
 }
 
+var css = stylecow.loadFile(file);
+
 args.forEach(function (arg) {
 	var match = arg.match(/^--?([a-z][0-9a-z-]*)(?:=(.*))?$/i);
 
@@ -34,18 +36,18 @@ args.forEach(function (arg) {
 		case 'opera':
 		case 'android':
 		case 'ios':
-			stylecow.support[name] = parseFloat(value);
+			css.settings.support[name] = parseFloat(value);
 			break;
 
 		case 'enable':
 		case 'disable':
 			value.split(',').forEach(function (val) {
-				if (!stylecow.plugins[val]) {
+				if (!css.settings.plugins[val]) {
 					console.log('The plugin "' + val + '" is missing');
 					process.exit(1);
 				}
-				
-				stylecow.plugins[val].enabled = (name === 'enable');
+
+				css.settings.plugins[val].enabled = (name === 'enable');
 			});
 			break;
 
@@ -54,8 +56,6 @@ args.forEach(function (arg) {
 			process.exit(1);
 	}
 });
-
-var css = stylecow.loadFile(file);
 
 css.transform();
 
