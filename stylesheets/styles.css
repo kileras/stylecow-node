@@ -101,7 +101,7 @@ article.main h2 {
   font-size: 2.4em;
 }
 article code {
-  font-family: "Lucida Sans", Monaco, Bitstream Vera Sans Mono, Lucida Console, Terminal;
+  font-family: Consolas, monospace;
   color: #efefef;
   font-size: 13px;
   -moz-border-radius: 2px;
