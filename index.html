@@ -33,7 +33,9 @@
 
             <h2 id="why">Why another CSS preprocessor?</h2>
 
-            <p>The main purpose of Stylecow is to bring more CSS support to all browsers. You write CSS and you get CSS. You don't have to learn another different language such LESS, SASS, etc. Stylecow converts your code to be more compatible with all browsers throught plugins without writing any non-standard code. So you can use Stylecow just to fix your modern CSS code and make it compatible with old browsers. And if you stop using Stylecow, your CSS code will remain CSS code.</p>
+            <p>The main purpose of Stylecow is to bring more CSS support to all browsers. You write CSS and you get CSS. Stylecow converts your code to be more compatible with all browsers throught plugins without writing any non-standard code. So you can use it just to fix your modern CSS code and make it compatible with old browsers.</p>
+
+            <p>You can also play with new (or future) css features such variables, nested rules or color manipulation using the w3c syntax, but if this is not enought for your needs, you can use other more powerful tools like SASS or LESS and use Stylecow only to fix your code for more compatibility.</p>
 
             <h2>How to use?</h2>
 
@@ -211,6 +213,108 @@ Example:
 .foo h2 {
     color: blue;
     font-size: 24px;
+}
+</code></pre>
+                    </div>
+                </li>
+            </ul>
+
+            <h2>Plugins with useful utilities</h2>
+
+            <ul class="plugin-list">
+                <li id="plugin-import">
+                    <div class="plugin-header">
+                        <h3>
+                            <a href="#plugin-import">import</a>
+                            <span>Enabled by default</span>
+                        </h3>
+                    </div>
+
+                    <div class="plugin-details">
+                        <p>Includes the @import files with relative path (not absolute or external)</p>
+
+                            <p>You write:</p>
+<pre><code>@import "my-styles.css";
+.foo {
+    color: blue;
+}
+</code></pre>
+                            <p>And stylecow converts to:</p>
+<pre><code>.imported-foo {
+    font-size: 2em;
+}
+.other-imported-foo {
+    background: blue;
+}
+.foo {
+    color: blue;
+}
+</code></pre>
+                    </div>
+                </li>
+
+                <li id="plugin-removeComments">
+                    <div class="plugin-header">
+                        <h3>
+                            <a href="#plugin-removeComments">removeComments</a>
+                            <span>Enabled by default</span>
+                        </h3>
+                    </div>
+
+                    <div class="plugin-details">
+                        <p>Removes all CSS comments</p>
+
+                            <p>You write:</p>
+<pre><code>.foo {
+    color: blue; /* My favourite color */
+}
+/* But green is not bad too */
+.foo:hover {
+    color: green;
+}
+</code></pre>
+                            <p>And stylecow converts to:</p>
+<pre><code>.foo {
+    color: blue;
+}
+.foo:hover {
+    color: green;
+}
+</code></pre>
+                    </div>
+                </li>
+
+                <li id="plugin-sourceMap">
+                    <div class="plugin-header">
+                        <h3>
+                            <a href="#plugin-sourceMap">sourceMap</a>
+                            <span>Enabled by default</span>
+                        </h3>
+                    </div>
+
+                    <div class="plugin-details">
+                        <p>Adds a comment before each ruleset element with the original filename and column number.</p>
+
+                            <p>You write:</p>
+<pre><code>.foo {
+    user-select: none;
+}
+.foo:hover {
+    color: green;
+}
+</code></pre>
+                            <p>And stylecow converts to:</p>
+<pre><code> /* styles.css:1
+.foo {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* styles.css:4 */
+.foo:hover {
+    color: green;
 }
 </code></pre>
                     </div>
