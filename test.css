@@ -2,7 +2,9 @@
 
 :root {
 	var-color: color(#333 blue);
+	width: 2.5vmin;
 }
+/*
 html {
 	color: color(#333 blue);
 	border-top-left-radius: 10px;
@@ -32,7 +34,6 @@ html {
         margin: initial;
     }
 }
-/*
 body {
     font-size: 3rem;
     background: linear-gradient(to bottom, red, blue);
