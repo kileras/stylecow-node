@@ -1,5 +1,4 @@
 var stylecow = require('./lib');
-
 var file = 'test.css';
 var css = stylecow.loadFile(file, true);
 

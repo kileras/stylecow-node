@@ -3,7 +3,10 @@
 :root {
 	var-color: color(#333 blue);
 	width: 2.5vmin;
+	min-width: fit-content;
+	max-width: fill-available;
 }
+
 /*
 html {
 	color: color(#333 blue);
