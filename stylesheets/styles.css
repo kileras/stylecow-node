@@ -92,6 +92,7 @@ article.main h2 {
   font-weight: normal;
   color: white;
   font-size: 2.4em;
+  line-height: 1.2;
 }
 article code {
   font-family: Consolas, monospace;
@@ -135,19 +136,14 @@ article pre {
 .plugin-header h3 {
   font-size: 2em;
   margin: 0;
-  padding-right: 300px;
+  line-height: 1.2;
 }
 .plugin-header span {
   font-weight: normal;
   font-size: 16px;
+  display: inline-block;
 }
-.plugin-header p {
-  position: absolute;
-  top: 10px;
-  right: 0;
-  width: 300px;
-  text-align: right;
-}
+
 .plugin-header p strong {
   display: inline-block;
   display: -moz-inline-block;
@@ -156,4 +152,17 @@ article pre {
   font-size: 14px;
   border-radius: 12px;
   margin-bottom: 2px;
+}
+
+@media (min-width: 600px) {
+  .plugin-header h3 {
+    padding-right: 300px;
+  }
+  .plugin-header p {
+    position: absolute;
+    top: 10px;
+    right: 0;
+    width: 300px;
+    text-align: right;
+  }
 }

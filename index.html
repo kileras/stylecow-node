@@ -77,6 +77,17 @@
 
             <pre><code>$ stylecow styles.css --enable=ieLinearGradient --disable=ieTransform,ieBackgroundAlpha</code></pre>
 
+            <p>You can also change the settings within the css file. Just create css comments starting by "stylecow":</p>
+
+<pre><code>/* stylecow --enable=ieLinearGradient --firefox=20.0 */
+
+.foo {
+    background: linear-gradient(to bottom, black, blue);
+}
+
+/* stylecow --disable=ieLinearGradient */
+</code></pre>
+
             <h2>Plugins to play with new css features</h2>
 
             <ul class="plugin-list">
@@ -403,7 +414,7 @@ Example:
                     </div>
 
                     <div class="plugin-details">
-                        <p>Normalizes the calc() function that requires spaces around binary "+" and "-" operators. Internet explorer (in accordance with the spec) does not accept calculations without spaces. <a href="http://www.w3.org/TR/css3-values/#calc">More info</a></p>
+                        <p>Normalizes the calc() function that requires spaces around binary "+" and "-" operators. Internet explorer (in accordance with the spec) does not accept calculations without spaces. <a href="http://caniuse.com/#feat=calc">More info</a></p>
                         <p>You write:</p>
 <pre><code>.foo {
     width: calc(100%-30px);
@@ -437,6 +448,55 @@ Example:
 <pre><code>.foo {
     -moz-border-radius-topleft: 10px;
     border-top-left-radius: 10px;
+}
+</code></pre>
+                    </div>
+                </li>
+
+                <li id="plugin-vmin">
+                    <div class="plugin-header">
+                        <h3>
+                            <a href="#plugin-vmin">vmin</a>
+                            <span>Enabled by default</span>
+                        </h3>
+                        <p><strong>explorer &lt; 10.0</strong></p>
+                    </div>
+
+                    <div class="plugin-details">
+                        <p>Add a ie9 fallback that support vm instead vmin, <a href="http://caniuse.com/#feat=viewport-units">more info</a></p>
+                        <p>You write:</p>
+<pre><code>.foo {
+    width: 3vmin;
+}
+</code></pre>
+                            <p>And stylecow converts to:</p>
+<pre><code>.foo {
+    width: 3vm;
+    width: 3vmin;
+}
+</code></pre>
+                    </div>
+                </li>
+
+                <li id="plugin-ffFillAvailable">
+                    <div class="plugin-header">
+                        <h3>
+                            <a href="#plugin-ffFillAvailable">ffFillAvailable</a>
+                            <span>Enabled by default</span>
+                        </h3>
+                    </div>
+
+                    <div class="plugin-details">
+                        <p>Fallback for firefox that supports the "-moz-available" property rather than "-moz-fill-available", <a href="http://caniuse.com/#feat=intrinsic-width">more info</a></p>
+                        <p>You write:</p>
+<pre><code>.foo {
+    min-width: fill-available;
+}
+</code></pre>
+                            <p>And stylecow converts to:</p>
+<pre><code>.foo {
+    min-width: -moz-available;
+    min-width: fill-available;
 }
 </code></pre>
                     </div>
