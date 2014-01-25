@@ -7,8 +7,8 @@
 	var-starColor: #FFEE1D;
 }
 
-
 body {
+	background: url(../ola.png) no-repeat center center;
 	var-color: #3b5998;
 
 	background: color(var(color));
