@@ -87,6 +87,14 @@
 
 /* stylecow --disable=ieLinearGradient */
 </code></pre>
+            
+            <p>The <strong>--output</strong> option saves the result in a css file.</p>
+
+            <pre><code>$ stylecow styles.css --output=compatible.styles.css</code></pre>
+
+            <p>In development phases, <strong>--output</strong> combined with <strong>--watch</strong> option executes the transformation when the main file (or any of the imported files) changes and save the result in the output file. This allows combine stylecow with <a href="https://github.com/shakyShane/browser-sync">browser-sync</a> or any other similar tool.</p>
+
+            <pre><code>$ stylecow styles.css --output=compatible.styles.css --watch</code></pre>
 
             <h2>Plugins to play with new css features</h2>
 
