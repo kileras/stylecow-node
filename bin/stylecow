@@ -9,22 +9,75 @@ if (!args.length) {
 	process.exit(0);
 }
 
-var file = (args[0] && args[0][0] !== '-') ? args.shift() : null;
-
-if (!file) {
-	console.log('Filename is required: stylecow <filename> (--options)');
-	process.exit(1);
-}
-
-var css = stylecow.loadFile(file);
+//Get the stylecow settings and process settings
+var scsettings = [], psettings = {};
+psettings.input = (args[0] && args[0][0] !== '-') ? args.shift() : null;
 
 args.forEach(function (arg) {
-	if (!css.setSetting(arg)) {
-		console.log('Unrecognised argument: ' + arg);
-		process.exit(1);
+	var match = arg.match(/^--?([a-z][0-9a-z-]*)(?:=(.*))?$/i);
+	var name = match[1], value = match[2];
+
+	switch (name) {
+		case 'watch':
+			psettings.watch = true;
+			break;
+
+		case 'output':
+			psettings.output = value;
+			break;
+
+		case 'input':
+			psettings.input = value;
+			break;
+
+		default:
+			scsettings.push(arg);
 	}
 });
 
-css.transform();
+//Execute stylecow
+var fs = require('fs');
 
-process.stdout.write(css.toString() + '\n');
+var execute = function () {
+	if (!psettings.input) {
+		console.log('Filename is required: stylecow <filename> (--options) or --input=filename.css');
+		process.exit(1);
+	}
+
+	var css = stylecow.loadFile(psettings.input);
+
+	scsettings.forEach(function (arg) {
+		if (!css.setSetting(arg)) {
+			console.log('Unrecognised argument: ' + arg);
+			process.exit(1);
+		}
+	});
+
+	css.transform();
+
+	if (psettings.output) {
+		fs.writeFileSync(psettings.output, css.toString());
+	} else {
+		process.stdout.write(css.toString());
+	}
+
+	return css;
+}
+
+var css = execute();
+
+if (psettings.watch) {
+	if (!psettings.output) {
+		console.log('--watch option needs also the --output option');
+		process.exit(1);
+	}
+
+	css.info.files.forEach(function (file) {
+		console.log('watching ' + file);
+
+		fs.watchFile(file, function (curr, prev) {
+			console.log('changed ' + file);
+			execute();
+		});
+	});
+}
