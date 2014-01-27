@@ -11,8 +11,12 @@ body {
 	background: url(../ola.png) no-repeat center center;
 	var-color: #3b5998;
 
-	background: color(var(color));
-	border-color: color(var(color), light:-10);
+	p {
+		background: color(var(color));
+		border-color: color(var(color), light:-10);
+	}
+
+	font-family: 'Arial';
 }
 /*
 .btn-facebook {
