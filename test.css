@@ -10,10 +10,13 @@
 body {
 	background: url(../ola.png) no-repeat center center;
 	var-color: #3b5998;
+	cursor: grab;
 
 	p {
 		background: color(var(color));
 		border-color: color(var(color), light:-10);
+		cursor: zoom-in;
+		cursor: grabbing;
 	}
 
 	font-family: 'Arial';
