@@ -10,6 +10,10 @@
 body {
 	background: url(../ola.png) no-repeat center center;
 	var-color: #3b5998;
+	position: sticky;
+	tab-size: 5;
+	font-feature-settings: "smcp";
+	region-fragment: break;
 
 	p {
 		background: color(var(color));
@@ -17,6 +21,11 @@ body {
 	}
 
 	font-family: 'Arial';
+}
+p:fullscreen {
+	font-feature-settings: "smcp";
+	region-fragment: break;
+	position: sticky;
 }
 /*
 .btn-facebook {
