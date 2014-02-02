@@ -14,7 +14,7 @@ var scsettings = [], psettings = {};
 psettings.input = (args[0] && args[0][0] !== '-') ? args.shift() : null;
 
 args.forEach(function (arg) {
-	var match = arg.match(/^--?([a-z][0-9a-z-]*)(?:=(.*))?$/i);
+	var match = arg.match(/^--?([a-z][0-9a-z\.]*)(?:=(.*))?$/i);
 	var name = match[1], value = match[2];
 
 	switch (name) {
