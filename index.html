@@ -33,13 +33,13 @@
 
             <h2 id="why">Why another CSS preprocessor?</h2>
 
-            <p>The main purpose of Stylecow is to bring more CSS support to all browsers. You write CSS and you get CSS. Stylecow converts your code to be more compatible with all browsers throught plugins without writing any non-standard code. So you can use it just to fix your modern CSS code and make it compatible with old browsers.</p>
+            <p>The main purpose of Stylecow is to bring more CSS support to all browsers. Stylecow converts your code to be more compatible with all browsers adding vendor prefixes, fixing browser specific bugs, emulating some non-supporting css properties, etc.</p>
 
-            <p>You can also play with new (or future) css features such variables, nested rules or color manipulation using the w3c syntax, but if this is not enought for your needs, you can use other more powerful tools like SASS or LESS and use Stylecow only to fix your code for more compatibility.</p>
+            <p>You can also play with new (or future) css features such variables, nested rules or color manipulation using the w3c syntax. If you need more power, you can use other more powerful tools like SASS or LESS and use Stylecow only to fix your code for more compatibility.</p>
 
             <h2>How to use?</h2>
 
-            <p>First, you need to install the library using npm. Use -g to install as global:</p>
+            <p>First, you need to install the library using npm. Use -g to install it globaly:</p>
 
             <pre><code>$ npm install stylecow -g</code></pre>
 
@@ -73,11 +73,15 @@
 
             <pre><code>$ stylecow styles.css --firefox=3.0 --explorer=6.0</code></pre>
 
-            <p>Some plugins are disabled by default because they are not "safe" plugins and can change some non desired aspects of the design. For example, ieLinearGradient plugin emulates the background gradient in explorer using the filter property, but sometimes it's better to use plain colors because the abuse of filters in explorer affects to performance. You can enable/disable plugins with the --enable and --disable options:</p>
+            <p>Some plugins are disabled by default because they are not "safe" plugins and can change some non desired aspects of the design. For example, ieLinearGradient plugin emulates the background gradient in explorer using the filter property, but the abuse of filters in explorer can affect to performance and have conflicts with other properties such border-radius. You can enable/disable plugins with the --enable and --disable options:</p>
 
             <pre><code>$ stylecow styles.css --enable=ieLinearGradient --disable=ieTransform,ieBackgroundAlpha</code></pre>
 
-            <p>You can also change the settings within the css file. Just create css comments starting by "stylecow":</p>
+            <p>Some plugins have specific settings. Use the syntax --pluginName.settingName=value:</p>
+
+            <pre><code>$ stylecow styles.css --enable=ieLinearGradient --disable=ieTransform,ieBackgroundAlpha --removeComments.important=true</code></pre>
+
+            <p>You can use css comments to enable/disable or configure plugins. This is useful to change the configuration for specific parts of your css. Just create css comments starting by "stylecow":</p>
 
 <pre><code>/* stylecow --enable=ieLinearGradient --firefox=20.0 */
 
@@ -87,7 +91,7 @@
 
 /* stylecow --disable=ieLinearGradient */
 </code></pre>
-            
+
             <p>The <strong>--output</strong> option saves the result in a css file.</p>
 
             <pre><code>$ stylecow styles.css --output=compatible.styles.css</code></pre>
@@ -281,7 +285,7 @@ Example:
                     </div>
 
                     <div class="plugin-details">
-                        <p>Removes all CSS comments</p>
+                        <p>Removes all CSS comments. By default only removes non-important comments (All comments starting by "!" are importants). Use the setting removeComments.important=true to remove also the important comments.</p>
 
                             <p>You write:</p>
 <pre><code>.foo {
@@ -456,6 +460,35 @@ Example:
 <pre><code>.foo {
     -moz-border-radius-topleft: 10px;
     border-top-left-radius: 10px;
+}
+</code></pre>
+                    </div>
+                </li>
+
+                <li id="plugin-fullscreen">
+                    <div class="plugin-header">
+                        <h3>
+                            <a href="#plugin-fullscreen">fullscreen</a>
+                            <span>Enabled by default</span>
+                        </h3>
+                    </div>
+
+                    <div class="plugin-details">
+                        <p>Fix Webkit/mozilla browsers that supports :-moz-full-screen and :-webkit-full-screen instead :-moz-fullscreen and :-webkit-fullscreen.</p>
+                        <p>You write:</p>
+<pre><code>.foo:fullscreen {
+    color: blue
+}
+</code></pre>
+                            <p>And stylecow converts to:</p>
+<pre><code>.foo:-moz-full-screen {
+    color: blue
+}
+.foo:-webkit-full-screen {
+    color: blue
+}
+.foo:fullscreen {
+    color: blue
 }
 </code></pre>
                     </div>
