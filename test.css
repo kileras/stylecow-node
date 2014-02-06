@@ -24,13 +24,15 @@ body {
 	}
 
 	font-family: 'Arial';
+	transition: transform 2s;
 }
+/*!
 p:fullscreen {
 	font-feature-settings: "smcp";
 	region-fragment: break;
 	position: sticky;
 }
-/* !
+
 .btn-facebook {
 	var-color: #3b5998;
 	background: color(var(color));
