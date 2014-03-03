@@ -15,11 +15,11 @@ psettings.input = (args[0] && args[0][0] !== '-') ? args.shift() : null;
 
 args.forEach(function (arg) {
 	var match = arg.match(/^--?([a-z][0-9a-z\.]*)(?:=(.*))?$/i);
-	var name = match[1], value = match[2];
+	var name = match[1], value = match[2] || true;
 
 	switch (name) {
 		case 'watch':
-			psettings.watch = true;
+			psettings.watch = value;
 			break;
 
 		case 'output':
@@ -66,6 +66,9 @@ var execute = function () {
 
 var css = execute();
 
+
+//Watching used files
+
 if (psettings.watch) {
 	if (!psettings.output) {
 		console.log('--watch option needs also the --output option');
@@ -75,9 +78,11 @@ if (psettings.watch) {
 	css.info.files.forEach(function (file) {
 		console.log('watching ' + file);
 
-		fs.watchFile(file, function (curr, prev) {
-			console.log('changed ' + file);
-			execute();
+		fs.watchFile(file, {persistent: true, interval: 2000}, function (curr, prev) {
+			if (curr.mtime !== prev.mtime) {
+				console.log('changed: ' + file);
+				execute();
+			}
 		});
 	});
 }
