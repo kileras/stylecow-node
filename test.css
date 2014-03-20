@@ -1,5 +1,8 @@
 div::after {
-	font-family: Arial;
+    var-color1: #222;
+    var-color2: var(color1);
+    font-family: var(color1);
+    font-family: var(color2);
 }
 
 /*!
