@@ -1,55 +1,5 @@
-div::after {
-    var-color1: #222;
-    var-color2: var(color1);
-    font-family: var(color1);
-    font-family: var(color2);
+@import 'test2.css';
+
+div {
+	font-size: 1rem;
 }
-
-/*!
-@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,700,400italic|Open+Sans+Condensed:700);
-
-:root {
-	var-font: Helvetica, sans-serif;
-	var-title-font: 'Title Condensed', Helvetica, sans-serif;
-	var-mainColor: #70CF19;
-	var-darkColor: rgb(40, 47, 54);
-	var-background: color(black, 7);
-	var-starColor: #FFEE1D;
-}
-
-body {
-	background: url(../ola.png) no-repeat center center;
-	var-color: #3b5998;
-	position: sticky;
-	tab-size: 5;
-	font-feature-settings: "smcp";
-	region-fragment: break;
-	cursor: grab;
-
-	p {
-		background: color(var(color));
-		border-color: color(var(color), light:-10);
-		cursor: zoom-in;
-		cursor: grabbing;
-	}
-
-	font-family: 'Arial';
-	transition: transform 2s;
-}
-p:fullscreen {
-	font-feature-settings: "smcp";
-	region-fragment: break;
-	position: sticky;
-}
-
-.btn-facebook {
-	var-color: #3b5998;
-	background: color(var(color));
-	border-color: color(var(color), light: -10);
-
-	&:hover {
-		background: color(var(color), light: -10);
-		border-color: color(var(color), light: -15);
-	}
-}
-*/

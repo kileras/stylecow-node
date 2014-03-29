@@ -1,8 +1,3 @@
-:root {
-	var-font: Helvetica, sans-serif;
-	var-title-font: 'Title Condensed', Helvetica, sans-serif;
-	var-mainColor: #70CF19;
-	var-darkColor: rgb(40, 47, 54);
-	var-background: color(black, 7);
-	var-starColor: #FFEE1D;
+html {
+	font-size: 62.5%;
 }
