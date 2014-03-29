@@ -55,6 +55,24 @@
 
             <pre><code>$ stylecow</code></pre>
 
+            <p>Programatic usage:</p>
+
+<pre><code>var stylecow = require('stylecow');
+var myCss = new stylecow();
+
+myCss.loadFile('my-styles.css');
+myCss.transform();
+myCss.output('dist/my-styles.css');
+
+//Watch for the files changes to rebuild the dist css:
+myCss.watch(function () {
+    var changedCss = new stylecow();
+    changedCss.loadFile('my-styles.css');
+    changedCss.transform();
+    changedCss.output('dist/my-styles.css');
+});
+</code></pre>
+
             <h2>Options</h2>
 
             <p>By default, stylecow brings support for the following minimal version browsers:</p>
@@ -460,6 +478,30 @@ Example:
 <pre><code>.foo {
     -moz-border-radius-topleft: 10px;
     border-top-left-radius: 10px;
+}
+</code></pre>
+                    </div>
+                </li>
+
+                <li id="plugin-pseudoelements">
+                    <div class="plugin-header">
+                        <h3>
+                            <a href="#plugin-pseudoelements">pseudoElements</a>
+                            <span>Enabled by default</span>
+                        </h3>
+                        <p><strong>explorer &lt; 9.0</strong></p>
+                    </div>
+
+                    <div class="plugin-details">
+                        <p>Ie 8 do not support ::before and ::after pseudoelements with two colons but support :before and :after (one colon).</p>
+                        <p>You write:</p>
+<pre><code>.foo::before {
+    content: "bar";
+}
+</code></pre>
+                            <p>And stylecow converts to:</p>
+<pre><code>.foo:before {
+    content: "bar";
 }
 </code></pre>
                     </div>
