@@ -44,19 +44,13 @@ var execute = function () {
 		process.exit(1);
 	}
 
-	var css = stylecow.loadFile(psettings.input);
+	var css = new stylecow();
 
-	scsettings.forEach(function (arg) {
-		if (!css.setSetting(arg)) {
-			console.log('Unrecognised argument: ' + arg);
-			process.exit(1);
-		}
-	});
-
-	css.transform();
+	css.loadFile(psettings.input);
+	css.transform(scsettings);
 
 	if (psettings.output) {
-		fs.writeFileSync(psettings.output, css.toString());
+		css.output(psettings.output);
 	} else {
 		process.stdout.write(css.toString());
 	}
@@ -70,19 +64,5 @@ var css = execute();
 //Watching used files
 
 if (psettings.watch) {
-	if (!psettings.output) {
-		console.log('--watch option needs also the --output option');
-		process.exit(1);
-	}
-
-	css.info.files.forEach(function (file) {
-		console.log('watching ' + file);
-
-		fs.watchFile(file, {persistent: true, interval: 2000}, function (curr, prev) {
-			if (curr.mtime !== prev.mtime) {
-				console.log('changed: ' + file);
-				execute();
-			}
-		});
-	});
+	css.watch(execute);
 }
