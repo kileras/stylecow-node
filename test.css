@@ -1,6 +1,9 @@
 @import 'test2.css';
 
 div {
+	--color: blue;
+	--newcolor: color(var(--color), 50);
+	color: var(--newcolor);
 	font-size: 1rem;
 	display: flex;
 	display: inline-flex;
