@@ -2,4 +2,7 @@
 
 div {
 	font-size: 1rem;
+	display: flex;
+	display: inline-flex;
+	flex-wrap: nowrap;
 }
