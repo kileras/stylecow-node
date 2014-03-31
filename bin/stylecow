@@ -1,68 +1,23 @@
 #!/usr/bin/env node
 
-var stylecow = require('../lib'),
-	info = require('../lib/info'),
-	args = process.argv.slice(2);
+var args = process.argv.slice(2);
 
 if (!args.length) {
-	info.print();
+	require('../lib/info').print();
 	process.exit(0);
 }
 
-//Get the stylecow settings and process settings
-var scsettings = [], psettings = {};
-psettings.input = (args[0] && args[0][0] !== '-') ? args.shift() : null;
+var stylecow = require('../lib');
 
-args.forEach(function (arg) {
-	var match = arg.match(/^--?([a-z][0-9a-z\.]*)(?:=(.*))?$/i);
-	var name = match[1], value = match[2] || true;
-
-	switch (name) {
-		case 'watch':
-			psettings.watch = value;
-			break;
-
-		case 'output':
-			psettings.output = value;
-			break;
-
-		case 'input':
-			psettings.input = value;
-			break;
-
-		default:
-			scsettings.push(arg);
-	}
-});
-
-//Execute stylecow
-var fs = require('fs');
-
-var execute = function () {
-	if (!psettings.input) {
-		console.log('Filename is required: stylecow <filename> (--options) or --input=filename.css');
-		process.exit(1);
-	}
-
-	var css = new stylecow();
-
-	css.loadFile(psettings.input);
-	css.transform(scsettings);
-
-	if (psettings.output) {
-		css.output(psettings.output);
-	} else {
-		process.stdout.write(css.toString());
-	}
-
-	return css;
+if (args[0] && args[0][0] !== '-') {
+	args[0] = '--input=' + args[0];
 }
 
-var css = execute();
-
-
-//Watching used files
-
-if (psettings.watch) {
-	css.watch(execute);
+if (args[1] && args[1][0] !== '-') {
+	args[1] = '--output=' + args[1];
 }
+
+var css = new stylecow();
+
+css.setCliSettings(args);
+css.execute();

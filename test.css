@@ -1,6 +1,7 @@
 /* stylecow --disable=variables */
 @import 'test2.css';
 
+
 div {
 	--color: blue;
 	--newcolor: color(var(--color), 50);
