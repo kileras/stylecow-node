@@ -3,11 +3,5 @@
 
 
 div {
-	--color: blue;
-	--newcolor: color(var(--color), 50);
-	color: var(--newcolor);
-	font-size: 1rem;
-	display: flex;
-	display: inline-flex;
-	flex-wrap: nowrap;
+	transform: rotate(65deg);
 }

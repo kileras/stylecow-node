@@ -1,13 +1,16 @@
 {
 	"name": "stylecow",
 	"description": "Modern CSS for all browsers",
-	"version": "0.5.1",
+	"version": "0.6.0",
 	"author": "Oscar Otero <oom@oscarotero.com>",
 	"homepage": "http://oscarotero.github.io/stylecow-node",
 	"bugs": "https://github.com/oscarotero/stylecow-node/issues",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/oscarotero/stylecow-node.git"
+	},
+	"dependencies": {
+		"sylvester": ">=0.2.0"
 	},
 	"main": "./lib/index",
 	"bin": {
