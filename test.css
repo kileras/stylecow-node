@@ -1,7 +1,8 @@
 /* stylecow --disable=variables */
-@import 'test2.css';
+/*@import 'test2.css';*/
 
 
-div {
+div, p, span {
+	font-size: 1rem;
 	transform: rotate(65deg);
 }
