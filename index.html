@@ -58,19 +58,11 @@
             <p>Programatic usage:</p>
 
 <pre><code>var stylecow = require('stylecow');
-var myCss = new stylecow();
+var css = new stylecow();
 
-myCss.loadFile('my-styles.css');
-myCss.transform();
-myCss.output('dist/my-styles.css');
-
-//Watch for the files changes to rebuild the dist css:
-myCss.watch(function () {
-    var changedCss = new stylecow();
-    changedCss.loadFile('my-styles.css');
-    changedCss.transform();
-    changedCss.output('dist/my-styles.css');
-});
+css.loadFile('my-styles.css');
+css.transform();
+css.output('dist/my-styles.css');
 </code></pre>
 
             <h2>Options</h2>
@@ -99,7 +91,7 @@ myCss.watch(function () {
 
             <pre><code>$ stylecow styles.css --enable=ieLinearGradient --disable=ieTransform,ieBackgroundAlpha --removeComments.important=true</code></pre>
 
-            <p>You can use css comments to enable/disable or configure plugins. This is useful to change the configuration for specific parts of your css. Just create css comments starting by "stylecow":</p>
+            <p>You can use css comments to enable/disable/configure plugins. This is useful to change the configuration for specific parts of your css. Just create css comments starting by "stylecow":</p>
 
 <pre><code>/* stylecow --enable=ieLinearGradient --firefox=20.0 */
 
@@ -114,9 +106,63 @@ myCss.watch(function () {
 
             <pre><code>$ stylecow styles.css --output=compatible.styles.css</code></pre>
 
-            <p>In development phases, <strong>--output</strong> combined with <strong>--watch</strong> option executes the transformation when the main file (or any of the imported files) changes and save the result in the output file. This allows combine stylecow with <a href="https://github.com/shakyShane/browser-sync">browser-sync</a> or any other similar tool.</p>
+            <p>Or you can define an output file using a second arguments:</p>
 
-            <pre><code>$ stylecow styles.css --output=compatible.styles.css --watch</code></pre>
+            <pre><code>$ stylecow styles.css compatible.styles.css</code></pre>
+
+            <p>The --watch option executes the transformation when the main file (or any of the imported files) changes and save the result in the output file. This allows combine stylecow with <a href="https://github.com/shakyShane/browser-sync">browser-sync</a> or any other similar tool.</p>
+
+            <pre><code>$ stylecow styles.css compatible.styles.css --watch</code></pre>
+
+            <h2>Load options from json</h2>
+
+            <p>Other more portable way to set the options is using a json file. Just create a file with the same name than the css appending the ".json" suffix. For example to set the options for <code>styles.css</code>, you must create <code>styles.css.json</code> in the same directory.</p>
+
+            <p>An example of configuration file can be the following:</p>
+
+<pre><code>{
+    "explorer": 10.0,
+    "firefox": 20.0,
+    "chrome": 30.0,
+    "safari": 7.0,
+    "opera": 16.0,
+    "android": 4.0,
+    "ios": 6.0,
+    "enable": ["ieLinearGradient", "ieTransform"]
+}
+</code></pre>
+            <p>Any configuration value provided in command line will overwrite the json value (if exists).</p>
+            <p>In the config file you can also define the output code style. By default is "default", but "minify" is also available:</p>
+
+<pre><code>{
+    "code": "minify"
+}
+</code></pre>
+
+            <p>Or a more fine tunning:</p>
+
+<pre><code>{
+    "code": {
+        "rulesetIndent": "\t",
+        "selectorJoiner": ", ",
+        "ruleColon": ": ",
+        "ruleStart": "\t",
+        "ruleEnd": ";\n",
+        "rulesetStart": " {\n",
+        "rulesetEnd": "}\n"
+    }
+}
+</code></pre>
+            
+            <ul>
+                <li><strong>rulesetIndent:</strong> The string used for the indentation of the nested rulesets. By default it's a tab but you can provide spaces (or any string you want).</li>
+                <li><strong>selectorJoiner:</strong> The string used to join various selectors. By default is a comma following a space (span, strong, em).</li>
+                <li><strong>ruleColon:</strong> The string used to join the property name and value in each rule. By default is a colon following a space (color: red)</li>
+                <li><strong>ruleStart:</strong> The string used at begining of each rule. By default it's a tab (to indent all rules in the ruleset)</li>
+                <li><strong>ruleEnd:</strong> The string used in the end of each rule. By defaul is a semicolon following a line break (to write each rule in a diferent line)</li>
+                <li><strong>rulesetStart:</strong> The string used at begining of each ruleset (just after the selector). By default it's a space following the open bracket and a new line.</li>
+                <li><strong>rulesetEnd:</strong> The string used in the end of each ruleset. By default is the closed bracket following a line break.</li>
+            </ul>
 
             <h2>Plugins to play with new css features</h2>
 
@@ -232,18 +278,18 @@ Example:
 
                             <p>You write:</p>
 <pre><code>:root {
-    var-mycolor: red;
+    --mycolor: red;
 }
 
 .foo {
-    color: var(mycolor);
+    color: var(--mycolor);
 }
 
 .foo h2 {
-    var-mycolor: blue;
+    --mycolor: blue;
 
-    color: var(mycolor);
-    font-size: var(mySize, 24px);
+    color: var(--mycolor);
+    font-size: var(--mySize, 24px);
 }
 </code></pre>
                             <p>And stylecow converts to:</p>
@@ -329,7 +375,7 @@ Example:
                     <div class="plugin-header">
                         <h3>
                             <a href="#plugin-sourceMap">sourceMap</a>
-                            <span>Enabled by default</span>
+                            <span>Disabled by default</span>
                         </h3>
                     </div>
 
@@ -345,7 +391,7 @@ Example:
 }
 </code></pre>
                             <p>And stylecow converts to:</p>
-<pre><code> /* styles.css:1
+<pre><code> /* styles.css:1 */
 .foo {
     -webkit-user-select: none;
     -moz-user-select: none;
@@ -461,6 +507,34 @@ Example:
                 <li id="plugin-ffBorderRadius">
                     <div class="plugin-header">
                         <h3>
+                            <a href="#plugin-ffBorderRadius">ieFlex</a>
+                            <span>Enabled by default</span>
+                        </h3>
+                        <p><strong>explorer &lt; 11.0</strong></p>
+                    </div>
+
+                    <div class="plugin-details">
+                        <p>Add explorer 10 old syntax for css flexbox.</p>
+                        <p>You write:</p>
+<pre><code>.foo {
+    display: flex;
+    justify-content: flex-start;
+}
+</code></pre>
+                            <p>And stylecow converts to:</p>
+<pre><code>.foo {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+}
+</code></pre>
+                    </div>
+                </li>
+
+                <li id="plugin-ffBorderRadius">
+                    <div class="plugin-header">
+                        <h3>
                             <a href="#plugin-ffBorderRadius">ffBorderRadius</a>
                             <span>Enabled by default</span>
                         </h3>
@@ -493,7 +567,7 @@ Example:
                     </div>
 
                     <div class="plugin-details">
-                        <p>Ie 8 do not support ::before and ::after pseudoelements with two colons but support :before and :after (one colon).</p>
+                        <p>Ie 8 do not support ::before, ::after, ::first-line and ::first-letter pseudoelements with two colons but support :before, :after, :first-line and :first-letter (one colon).</p>
                         <p>You write:</p>
 <pre><code>.foo::before {
     content: "bar";
@@ -777,7 +851,7 @@ Example:
                     </div>
 
                     <div class="plugin-details">
-                        <p>Add ms filters to emulate some 2d css transformations: rotate(), scale(-1, -1), scalex(-1) and scaley(-1). This plugin is disabled by default because it's not "safe", and the use of filters affects to performance. You can enable it with the parameter <code>--enable=ieBackgroundAlpha</code></p>
+                        <p>Add ms filters to emulate some 2d css transformations: rotate(), scale(), skew(), matrix(). This plugin is disabled by default because it's not "safe", and the use of filters affects to performance. You can enable it with the parameter <code>--enable=ieBackgroundAlpha</code></p>
                             <p>You write:</p>
 <pre><code>.foo {
     transform: rotate(45deg);
