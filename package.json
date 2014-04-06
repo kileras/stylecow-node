@@ -10,7 +10,7 @@
 		"url": "https://github.com/oscarotero/stylecow-node.git"
 	},
 	"dependencies": {
-		"sylvester": ">=0.2.0"
+		"sylvester": "0.0.21"
 	},
 	"main": "./lib/index",
 	"bin": {
