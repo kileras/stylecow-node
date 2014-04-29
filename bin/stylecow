@@ -7,8 +7,6 @@ if (!args.length) {
 	process.exit(0);
 }
 
-var stylecow = require('../lib');
-
 if (args[0] && args[0][0] !== '-') {
 	args[0] = '--input=' + args[0];
 }
@@ -17,6 +15,7 @@ if (args[1] && args[1][0] !== '-') {
 	args[1] = '--output=' + args[1];
 }
 
+var stylecow = require('../lib');
 var css = new stylecow();
 
 css.setCliSettings(args);

@@ -1,5 +1,5 @@
 {
-    "input": "test.css",
+    "output": "test.min.css",
     "explorer": 8.0,
     "firefox": 15.0,
     "chrome": 25.0,
